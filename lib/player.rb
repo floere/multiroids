@@ -88,7 +88,8 @@ class Player < Moveable
     return unless shoot?
     bullet = Bullet.new @window
     bullet.add_to space
-    bullet.warp CP::Vec2.new(320, 240)
+    bullet.warp position
+    # @shape.body.v
     bullet
   end
   

@@ -26,4 +26,12 @@ class Moveable
     space.add_shape @shape
   end
   
+  def position
+    @shape.body.p
+  end
+  
+  def velocity
+    @shape.body.v
+  end
+  
 end
