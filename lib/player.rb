@@ -36,7 +36,7 @@ class Player < Moveable
     # Keep in mind that down the screen is positive y, which means that PI/2 radians,
     # which you might consider the top in the traditional Trig unit circle sense is actually
     # the bottom; thus 3PI/2 is the top
-    point_to 3 * Math::PI / 2.0
+    direction = 3 * Math::PI / 2.0
     # @shape.body.a =  3 * Math::PI / 2.0 # angle in radians; faces towards top of screen
   end
   
@@ -90,6 +90,7 @@ class Player < Moveable
     bullet = Bullet.new @window
     bullet.add_to space
     bullet.shoot self
+    @bullet_loaded = false
     bullet
   end
   

@@ -14,12 +14,24 @@ class Moveable
     @shape.body.p = vect
   end
   
-  def point_to radian
-    @shape.body.a = radian
+  def position= position
+    @shape.body.p = position
+  end
+  
+  def direction= direction
+    @shape.body.a = direction
   end
   
   def direction
     @shape.body.a
+  end
+  
+  def speed= v
+    @shape.body.v = v
+  end
+  
+  def speed
+    @shape.body.v
   end
   
   # Wrap to the other side of the screen when we fly off the edge.
