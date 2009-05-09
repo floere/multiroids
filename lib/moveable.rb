@@ -10,22 +10,35 @@ class Moveable
   end
   
   # Directly set the position of our Moveable.
+  #
   def warp vect
     @shape.body.p = vect
   end
   
+  def position
+    @shape.body.p
+  end
+  
+  # Directly set the position of our Moveable.
+  #
   def position= position
     @shape.body.p = position
   end
   
-  def direction= direction
-    @shape.body.a = direction
+  def rotation= rotation
+    @shape.body.a = rotation
   end
   
-  def direction
+  def rotation
     @shape.body.a
   end
   
+  def drawing_rotation
+    rotation.radians_to_gosu
+  end
+  
+  # Directly set the speed of our Moveable.
+  #
   def speed= v
     @shape.body.v = v
   end
@@ -44,10 +57,6 @@ class Moveable
   def add_to space
     space.add_body @shape.body
     space.add_shape @shape
-  end
-  
-  def position
-    @shape.body.p
   end
   
   def velocity

@@ -88,8 +88,8 @@ class Player < Moveable
   def shoot space
     return unless shoot?
     bullet = Bullet.new @window
-    bullet.add_to space
     bullet.shoot_from self
+    bullet.add_to space
     bullet
   end
   
