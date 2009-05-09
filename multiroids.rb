@@ -24,6 +24,8 @@ require 'lib/numeric'
 require 'lib/zorder'
 require 'lib/moveable'
 require 'lib/player'
+require 'lib/asteroid'
+require 'lib/bullet'
 require 'lib/game_window'
 
 window = GameWindow.new

@@ -5,6 +5,7 @@ class Moveable
   attr_reader :shape
   
   def initialize window, shape = nil
+    @window = window
     @shape = shape if shape # refactoring
   end
   

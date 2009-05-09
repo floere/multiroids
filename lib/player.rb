@@ -5,6 +5,8 @@ class Player < Moveable
   def initialize window
     super window
     
+    @bullet_loaded = true
+    
     # Create the Body for the Player
     body = CP::Body.new 10.0, 150.0
     
@@ -13,7 +15,7 @@ class Player < Moveable
     # We'll use s simple, 4 sided Poly for our Player (ship)
     # You need to define the vectors so that the "top" of the Shape is towards 0 radians (the right)
     #
-    shape_array = [CP::Vec2.new(-25.0, -25.0), CP::Vec2.new(-25.0, 25.0), CP::Vec2.new(25.0, 1.0), CP::Vec2.new(25.0, -1.0)]
+    shape_array = [CP::Vec2.new(-10.0, -10.0), CP::Vec2.new(-10.0, 10.0), CP::Vec2.new(10.0, 1.0), CP::Vec2.new(10.0, -1.0)]
     @shape = CP::Shape::Poly.new body, shape_array, CP::Vec2.new(0,0)
     
     # The collision_type of a shape allows us to set up special collision behavior
@@ -78,8 +80,16 @@ class Player < Moveable
     @shape.body.apply_force(-(@shape.body.a.radians_to_vec2 * (@deceleration/SUBSTEPS)), CP::Vec2.new(0.0, 0.0))
   end
   
+  def shoot?
+    @bullet_loaded
+  end
+  
   def shoot space
-    
+    return unless shoot?
+    bullet = Bullet.new @window
+    bullet.add_to space
+    bullet.warp CP::Vec2.new(320, 240)
+    bullet
   end
   
   def draw

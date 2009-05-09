@@ -31,6 +31,7 @@ class GameWindow < Gosu::Window
     @player.warp CP::Vec2.new(320, 240) # move to the center of the window
     
     @stars = Array.new
+    @bullets = Array.new
         
     # Here we define what is supposed to happen when a Player (ship) collides with a Star
     # I create a @remove_shapes array because we cannot remove either Shapes or Bodies
@@ -47,6 +48,12 @@ class GameWindow < Gosu::Window
       @remove_shapes << star_shape
     end
     
+    @space.add_collision_func :ship, :bullet do |ship_shape, bullet_shape|
+      @score += 10
+      @beep.play
+      @remove_shapes << bullet_shape
+    end
+    
     # Here we tell Space that we don't want one star bumping into another
     # The reason we need to do this is because when the Player hits a Star,
     # the Star will travel until it is removed in the update cycle below
@@ -55,6 +62,11 @@ class GameWindow < Gosu::Window
     # To see the effect, remove this line and play the game, every once in a while
     # you'll see a Star moving
     @space.add_collision_func :star, :star, &nil
+    
+    @space.add_collision_func :bullet, :bullet do |bullet_shape1, bullet_shape2|
+      @remove_shapes << bullet_shape1
+      @remove_shapes << bullet_shape2
+    end
   end
   
   def remove_collided
@@ -86,6 +98,11 @@ class GameWindow < Gosu::Window
       end
     elsif button_down? Gosu::Button::KbDown
       @player.reverse
+    end
+    
+    if button_down? Gosu::Button::KbSpace
+      bullet = @player.shoot @space
+      @bullets << bullet if bullet
     end
   end
   
@@ -134,6 +151,7 @@ class GameWindow < Gosu::Window
     @background_image.draw 0, 0, ZOrder::Background
     @player.draw
     @stars.each &:draw
+    @bullets.each &:draw
     @font.draw "Score: #{@score}", 10, 10, ZOrder::UI, 1.0, 1.0, 0xffffff00
   end
 
