@@ -36,7 +36,8 @@ class Player < Moveable
     # Keep in mind that down the screen is positive y, which means that PI/2 radians,
     # which you might consider the top in the traditional Trig unit circle sense is actually
     # the bottom; thus 3PI/2 is the top
-    @shape.body.a =  3 * Math::PI / 2.0 # angle in radians; faces towards top of screen
+    point_to 3 * Math::PI / 2.0
+    # @shape.body.a =  3 * Math::PI / 2.0 # angle in radians; faces towards top of screen
   end
   
   # Apply negative Torque; Chipmunk will do the rest
@@ -88,8 +89,7 @@ class Player < Moveable
     return unless shoot?
     bullet = Bullet.new @window
     bullet.add_to space
-    bullet.warp position
-    # @shape.body.v
+    bullet.shoot self
     bullet
   end
   

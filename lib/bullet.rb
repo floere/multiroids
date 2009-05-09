@@ -14,6 +14,13 @@ class Bullet < Moveable
     @shape.body.a = 3 * Math::PI / 2.0 # angle in radians; faces towards top of screen
   end
   
+  def shoot player
+    warp player.position
+    point_to player.direction
+    # bullet.shape.body.apply_force((@shape.body.a.radians_to_vec2 * (@acceleration/SUBSTEPS)), CP::Vec2.new(0.0, 0.0))
+    # @shape.body.v
+  end
+  
   def draw
     @image.draw_rot(@shape.body.p.x, @shape.body.p.y, ZOrder::Player, @shape.body.a.radians_to_gosu)
   end
