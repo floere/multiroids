@@ -15,6 +15,8 @@ class Bullet < Moveable
     # @shape.body.p = CP::Vec2.new(rand * SCREEN_WIDTH, rand * SCREEN_HEIGHT) # position
     @shape.body.v = CP::Vec2.new(rand(40) - 20, rand(40)-20) # velocity
     @shape.body.a = 3 * Math::PI / 2.0 # angle in radians; faces towards top of screen
+    
+    @shape.collision_type = :bullet
   end
   
   def shoot_from player

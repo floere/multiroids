@@ -33,6 +33,10 @@ class Moveable
     @shape.body.v
   end
   
+  def current_speed
+    Math.sqrt(speed.x**2 + speed.y**2)
+  end
+  
   # Directly set the rotation of our Moveable.
   #
   def rotation= rotation
@@ -47,6 +51,8 @@ class Moveable
   end
   
   # Length is the vector length you want.
+  #
+  # Note: radians_to_vec2
   #
   def rotation_as_vector length
     rotation = -self.rotation + Math::PI / 2

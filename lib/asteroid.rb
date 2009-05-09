@@ -12,10 +12,11 @@ class Asteroid < Moveable
     
     body = CP::Body.new 10, 150
     @shape = CP::Shape::Circle.new(body, 60, CP::Vec2.new(0.0, 0.0))
-    @shape.collision_type = :asteroid
-    @shape.body.p = CP::Vec2.new(rand * SCREEN_WIDTH, rand * SCREEN_HEIGHT) # position
-    @shape.body.v = CP::Vec2.new(rand(40) - 20, rand(40)-20) # velocity
+    @shape.body.p = CP::Vec2.new(rand * SCREEN_WIDTH, -30) # position
+    @shape.body.v = CP::Vec2.new(0, rand(20)) # velocity
     @shape.body.a = 3 * Math::PI / 2.0 # angle in radians; faces towards top of screen
+    
+    @shape.collision_type = :asteroid
   end
 
   def draw

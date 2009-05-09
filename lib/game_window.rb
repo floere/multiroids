@@ -25,7 +25,7 @@ class GameWindow < Gosu::Window
     # the feel I'd like in this situation
     @space = CP::Space.new
     # @space.damping = 0.8
-    @space.damping = 0.9
+    @space.damping = 1.0
     
     @player = Player.new self
     @player.add_to @space
@@ -43,16 +43,16 @@ class GameWindow < Gosu::Window
     # Also note that both Shapes involved in the collision are passed into the closure
     # in the same order that their collision_types are defined in the add_collision_func call
     @remove_shapes = []
-    @space.add_collision_func(:ship, :asteroid) do |ship_shape, asteroid_shape|
+    @space.add_collision_func :ship, :asteroid do |ship_shape, asteroid_shape|
       @score += 10
       @beep.play
-      @remove_shapes << asteroid_shape
+      # remove asteroid_shape
     end
     
     @space.add_collision_func :ship, :bullet do |ship_shape, bullet_shape|
       @score += 10
       @beep.play
-      @remove_shapes << bullet_shape
+      remove bullet_shape
     end
     
     # Here we tell Space that we don't want one star bumping into another
@@ -65,8 +65,8 @@ class GameWindow < Gosu::Window
     @space.add_collision_func :asteroid, :asteroid, &nil
     
     @space.add_collision_func :bullet, :bullet do |bullet_shape1, bullet_shape2|
-      @remove_shapes << bullet_shape1
-      @remove_shapes << bullet_shape2
+      remove bullet_shape1
+      remove bullet_shape2
     end
   end
   
@@ -158,6 +158,10 @@ class GameWindow < Gosu::Window
 
   def button_down id
     close if id == Gosu::Button::KbEscape
+  end
+  
+  def remove shape
+    @remove_shapes << shape
   end
   
 end

@@ -5,6 +5,7 @@ class Player < Moveable
   def initialize window
     super window
     
+    @boost_enabled = true
     @bullet_loaded = true
     
     # Create the Body for the Player
@@ -18,26 +19,24 @@ class Player < Moveable
     shape_array = [CP::Vec2.new(-10.0, -10.0), CP::Vec2.new(-10.0, 10.0), CP::Vec2.new(10.0, 1.0), CP::Vec2.new(10.0, -1.0)]
     @shape = CP::Shape::Poly.new body, shape_array, CP::Vec2.new(0,0)
     
-    # The collision_type of a shape allows us to set up special collision behavior
-    # based on these types.  The actual value for the collision_type is arbitrary
-    # and, as long as it is consistent, will work for us; of course, it helps to have it make sense
-    @shape.collision_type = :ship
-    
     @image = Gosu::Image.new window, "media/spaceship.png", false
     
     @shape.body.p = CP::Vec2.new 0.0, 0.0 # position
     @shape.body.v = CP::Vec2.new 0.0, 0.0 # velocity
     
-    @rotation           = 250.0 # up-/downgradeable
-    @acceleration       = 800.0 # up-/downgradeable
-    @boost_acceleration = 800.0 # up-/downgradeable
-    @deceleration       = 200.0 # up-/downgradeable
+    # up-/downgradeable
+    @rotation           = 150.0
+    @acceleration       = 800.0
+    @boost_acceleration = 100_000.0
+    @deceleration       = 200.0
+    @max_speed          = 200.0
     
     # Keep in mind that down the screen is positive y, which means that PI/2 radians,
     # which you might consider the top in the traditional Trig unit circle sense is actually
     # the bottom; thus 3PI/2 is the top
     direction = 3 * Math::PI / 2.0
-    # @shape.body.a =  3 * Math::PI / 2.0 # angle in radians; faces towards top of screen
+    
+    @shape.collision_type = :ship
   end
   
   # Apply negative Torque; Chipmunk will do the rest
@@ -64,14 +63,22 @@ class Player < Moveable
   # and with a magnitude representing the force we want to apply.
   #
   def accelerate
-    @shape.body.apply_force((@shape.body.a.radians_to_vec2 * (@acceleration/SUBSTEPS)), CP::Vec2.new(0.0, 0.0))
+    acceleration = [@acceleration, (@max_speed-self.current_speed)].min
+    @shape.body.apply_force((@shape.body.a.radians_to_vec2 * (acceleration/SUBSTEPS)), CP::Vec2.new(0.0, 0.0))
   end
   
   # Apply even more forward force.
   # See accelerate for more details.
   #
   def boost
-    @shape.body.apply_force((@shape.body.a.radians_to_vec2 * ((@acceleration + @boost_acceleration)/SUBSTEPS)), CP::Vec2.new(0.0, 0.0))
+    return unless @boost_enabled
+    puts "BOOST!"
+    @boost_enabled = false
+    @shape.body.apply_force((@shape.body.a.radians_to_vec2 * (@boost_acceleration/SUBSTEPS)), CP::Vec2.new(0.0, 0.0))
+    Thread.new do
+      sleep 10
+      @boost_enabled = true
+    end
   end
   
   # Apply reverse force
@@ -90,6 +97,7 @@ class Player < Moveable
     bullet = Bullet.new @window
     bullet.shoot_from self
     bullet.add_to space
+    @bullet_loaded = false
     bullet
   end
   
