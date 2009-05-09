@@ -89,8 +89,7 @@ class Player < Moveable
     return unless shoot?
     bullet = Bullet.new @window
     bullet.add_to space
-    bullet.shoot self
-    @bullet_loaded = false
+    bullet.shoot_from self
     bullet
   end
   

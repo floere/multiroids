@@ -14,7 +14,7 @@ class Bullet < Moveable
     # point_to 3 * Math::PI / 2.0 # angle in radians; faces towards top of screen
   end
   
-  def shoot player
+  def shoot_from player
     position = player.position
     direction = player.direction
     speed = player.speed
