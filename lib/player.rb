@@ -94,6 +94,6 @@ class Player < Moveable
   end
   
   def draw
-    @image.draw_rot(@shape.body.p.x, @shape.body.p.y, ZOrder::Player, @shape.body.a.radians_to_gosu)
+    @image.draw_rot(@shape.body.p.x, @shape.body.p.y, ZOrder::Player, drawing_rotation)
   end
 end

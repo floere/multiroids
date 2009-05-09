@@ -15,20 +15,29 @@ class Moveable
     @shape.body.p = vect
   end
   
-  def position
-    @shape.body.p
-  end
-  
   # Directly set the position of our Moveable.
   #
   def position= position
     @shape.body.p = position
   end
+  def position
+    @shape.body.p
+  end
   
+  # Directly set the speed of our Moveable.
+  #
+  def speed= v
+    @shape.body.v = v
+  end
+  def speed
+    @shape.body.v
+  end
+  
+  # Directly set the rotation of our Moveable.
+  #
   def rotation= rotation
     @shape.body.a = rotation
   end
-  
   def rotation
     @shape.body.a
   end
@@ -37,21 +46,21 @@ class Moveable
     rotation.radians_to_gosu
   end
   
-  # Directly set the speed of our Moveable.
+  # Length is the vector length you want.
   #
-  def speed= v
-    @shape.body.v = v
-  end
-  
-  def speed
-    @shape.body.v
+  def rotation_as_vector length
+    rotation = -self.rotation + Math::PI / 2
+    x = Math.sin rotation
+    y = Math.cos rotation
+    total_length = Math.sqrt(x**2 + y**2)
+    multiplier = length / total_length
+    CP::Vec2.new(x * multiplier, y * multiplier)
   end
   
   # Wrap to the other side of the screen when we fly off the edge.
   #
   def validate_position
-    l_position = CP::Vec2.new(@shape.body.p.x % SCREEN_WIDTH, @shape.body.p.y % SCREEN_HEIGHT)
-    @shape.body.p = l_position
+    self.position = CP::Vec2.new(position.x % SCREEN_WIDTH, position.y % SCREEN_HEIGHT)
   end
   
   def add_to space

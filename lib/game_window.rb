@@ -31,7 +31,7 @@ class GameWindow < Gosu::Window
     @player.add_to @space
     @player.warp CP::Vec2.new(320, 240) # move to the center of the window
     
-    @stars = Array.new
+    @asteroids = Array.new
     @bullets = Array.new
         
     # Here we define what is supposed to happen when a Player (ship) collides with a Star
@@ -80,7 +80,7 @@ class GameWindow < Gosu::Window
     # of the Stars that were gathered by the Player
     #
     @remove_shapes.each do |shape|
-      @stars.delete_if { |star| star.shape == shape }
+      @asteroids.delete_if { |star| star.shape == shape }
       @space.remove_body(shape.body)
       @space.remove_shape(shape)
     end
@@ -128,10 +128,10 @@ class GameWindow < Gosu::Window
   end
   
   def maybe_add_asteroid
-    if rand(100) < 4 and @stars.size < 10 then
+    if @asteroids.size < 1 then
       asteroid = Asteroid.new self
       asteroid.add_to @space
-      @stars.push asteroid
+      @asteroids.push asteroid
     end
   end
   
@@ -149,9 +149,9 @@ class GameWindow < Gosu::Window
   end
 
   def draw
-    @background_image.draw 0, 0, ZOrder::Background
+    @background_image.draw 0, 0, ZOrder::Background, 1.5, 1.2
     @player.draw
-    @stars.each &:draw
+    @asteroids.each &:draw
     @bullets.each &:draw
     @font.draw "Score: #{@score}", 10, 10, ZOrder::UI, 1.0, 1.0, 0xffffff00
   end

@@ -4,8 +4,10 @@ class Bullet < Moveable
   def initialize window
     super window
     
+    @speed = 40.0
+    
     @image = Gosu::Image.new window, "media/bullet.png", false
-    @shape = CP::Shape::Circle.new(CP::Body.new(0.0001, 0.0001),
+    @shape = CP::Shape::Circle.new(CP::Body.new(0.1, 0.1),
                                    1.5,
                                    CP::Vec2.new(0.0, 0.0))
     @shape.collision_type = :circle
@@ -17,7 +19,7 @@ class Bullet < Moveable
   
   def shoot_from player
     self.position = player.position
-    self.speed = player.speed * 2
+    self.speed = player.rotation_as_vector @speed
     self.rotation = player.rotation
   end
   
