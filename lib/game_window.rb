@@ -43,10 +43,10 @@ class GameWindow < Gosu::Window
     # Also note that both Shapes involved in the collision are passed into the closure
     # in the same order that their collision_types are defined in the add_collision_func call
     @remove_shapes = []
-    @space.add_collision_func(:ship, :star) do |ship_shape, star_shape|
+    @space.add_collision_func(:ship, :asteroid) do |ship_shape, asteroid_shape|
       @score += 10
       @beep.play
-      @remove_shapes << star_shape
+      @remove_shapes << asteroid_shape
     end
     
     @space.add_collision_func :ship, :bullet do |ship_shape, bullet_shape|
@@ -62,7 +62,7 @@ class GameWindow < Gosu::Window
     #
     # To see the effect, remove this line and play the game, every once in a while
     # you'll see a Star moving
-    @space.add_collision_func :star, :star, &nil
+    @space.add_collision_func :asteroid, :asteroid, &nil
     
     @space.add_collision_func :bullet, :bullet do |bullet_shape1, bullet_shape2|
       @remove_shapes << bullet_shape1
@@ -80,9 +80,9 @@ class GameWindow < Gosu::Window
     # of the Stars that were gathered by the Player
     #
     @remove_shapes.each do |shape|
-      @asteroids.delete_if { |star| star.shape == shape }
-      @space.remove_body(shape.body)
-      @space.remove_shape(shape)
+      @asteroids.delete_if { |asteroid| asteroid.shape == shape }
+      @space.remove_body shape.body
+      @space.remove_shape shape
     end
     @remove_shapes.clear # clear out the shapes for next pass
   end
