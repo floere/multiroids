@@ -2,14 +2,20 @@
 #
 class Player < Moveable
   
+  attr_reader :score
+  
   def initialize window
     super window
+    
+    @score = 0
     
     @boost_enabled = true
     @bullet_loaded = true
     
+    @color = Gosu::Color.new 0xff000000
+    
     # Create the Body for the Player
-    body = CP::Body.new 10.0, 150.0
+    body = CP::Body.new 10.0, 75.0
     
     # In order to create a shape, we must first define it
     # Chipmunk defines 3 types of Shapes: Segments, Circles and Polys
@@ -25,7 +31,7 @@ class Player < Moveable
     @shape.body.v = CP::Vec2.new 0.0, 0.0 # velocity
     
     # up-/downgradeable
-    @rotation           = 150.0
+    @rotation           = 100.0
     @acceleration       = 800.0
     @boost_acceleration = 100_000.0
     @deceleration       = 200.0
@@ -37,6 +43,16 @@ class Player < Moveable
     direction = 3 * Math::PI / 2.0
     
     @shape.collision_type = :ship
+  end
+  
+  def score!
+    @score += 10
+  end
+  
+  def colorize red, green, blue
+    @color.red = red
+    @color.green = green
+    @color.blue = blue
   end
   
   # Apply negative Torque; Chipmunk will do the rest
@@ -64,20 +80,15 @@ class Player < Moveable
   #
   def accelerate
     acceleration = [@acceleration, (@max_speed-self.current_speed)].min
-    @shape.body.apply_force((@shape.body.a.radians_to_vec2 * (acceleration/SUBSTEPS)), CP::Vec2.new(0.0, 0.0))
+    @shape.body.apply_force((rotation_vector * (acceleration/SUBSTEPS)), CP::Vec2.new(0.0, 0.0))
   end
   
   # Apply even more forward force.
   # See accelerate for more details.
   #
   def boost
-    return unless @boost_enabled
-    puts "BOOST!"
-    @boost_enabled = false
-    @shape.body.apply_force((@shape.body.a.radians_to_vec2 * (@boost_acceleration/SUBSTEPS)), CP::Vec2.new(0.0, 0.0))
-    Thread.new do
-      sleep 10
-      @boost_enabled = true
+    sometimes :boost_enabled, 5 do
+      @shape.body.apply_force((rotation_vector * (@boost_acceleration/SUBSTEPS)), CP::Vec2.new(0.0, 0.0))
     end
   end
   
@@ -85,23 +96,19 @@ class Player < Moveable
   # See accelerate for more details
   #
   def reverse
-    @shape.body.apply_force(-(@shape.body.a.radians_to_vec2 * (@deceleration/SUBSTEPS)), CP::Vec2.new(0.0, 0.0))
+    @shape.body.apply_force(-(rotation_vector * (@deceleration / SUBSTEPS)), CP::Vec2.new(0.0, 0.0))
   end
   
-  def shoot?
-    @bullet_loaded
-  end
-  
-  def shoot space
-    return unless shoot?
-    bullet = Bullet.new @window
-    bullet.shoot_from self
-    bullet.add_to space
-    @bullet_loaded = false
-    bullet
+  def shoot
+    sometimes :bullet_loaded, 0.2 do
+      bullet = Bullet.new @window
+      bullet.shoot_from self
+      bullet.add_to @window.space
+      bullet
+    end
   end
   
   def draw
-    @image.draw_rot(@shape.body.p.x, @shape.body.p.y, ZOrder::Player, drawing_rotation)
+    @image.draw_rot(@shape.body.p.x, @shape.body.p.y, ZOrder::Player, drawing_rotation, 1.0, 1.0, 1.0, 1.0, @color)
   end
 end

@@ -2,6 +2,9 @@
 # It also provides the pulse of our game.
 #
 class GameWindow < Gosu::Window
+  
+  attr_reader :space
+  
   def initialize
     super SCREEN_WIDTH, SCREEN_HEIGHT, false, 16
     
@@ -25,15 +28,15 @@ class GameWindow < Gosu::Window
     # the feel I'd like in this situation
     @space = CP::Space.new
     # @space.damping = 0.8
-    @space.damping = 1.0
+    @space.damping = 0.95
     
-    @player = Player.new self
-    @player.add_to @space
-    @player.warp CP::Vec2.new(320, 240) # move to the center of the window
+    @asteroids = []
+    @bullets = []
+    @controls = []
     
-    @asteroids = Array.new
-    @bullets = Array.new
-        
+    add_player1
+    add_player2
+    
     # Here we define what is supposed to happen when a Player (ship) collides with a Star
     # I create a @remove_shapes array because we cannot remove either Shapes or Bodies
     # from Space within a collision closure, rather, we have to wait till the closure
@@ -44,16 +47,10 @@ class GameWindow < Gosu::Window
     # in the same order that their collision_types are defined in the add_collision_func call
     @remove_shapes = []
     @space.add_collision_func :ship, :asteroid do |ship_shape, asteroid_shape|
-      @score += 10
-      @beep.play
-      # remove asteroid_shape
+      
     end
     
-    @space.add_collision_func :ship, :bullet do |ship_shape, bullet_shape|
-      @score += 10
-      @beep.play
-      remove bullet_shape
-    end
+    @space.add_collision_func :ship, :bullet, &nil
     
     # Here we tell Space that we don't want one star bumping into another
     # The reason we need to do this is because when the Player hits a Star,
@@ -68,6 +65,38 @@ class GameWindow < Gosu::Window
       remove bullet_shape1
       remove bullet_shape2
     end
+  end
+  
+  def add_player1
+    @player1 = Player.new self
+    @player1.add_to @space
+    @player1.warp CP::Vec2.new(SCREEN_WIDTH/2, SCREEN_HEIGHT-20) # move to the center of the window
+    @player1.colorize 255, 0, 0
+    
+    @controls << Controls.new(self, @player1,
+      Gosu::Button::KbLeft =>       :turn_left,
+      Gosu::Button::KbRight =>      :turn_right,
+      Gosu::Button::KbUp =>         :accelerate,
+      Gosu::Button::KbRightShift => :boost,
+      Gosu::Button::KbDown =>       :reverse,
+      Gosu::Button::KbSpace =>      :shoot
+    )
+  end
+  
+  def add_player2
+    @player2 = Player.new self
+    @player2.add_to @space
+    @player2.warp CP::Vec2.new(SCREEN_WIDTH/2, 20) # move to the center of the window
+    @player2.colorize 0, 255, 0
+    
+    @controls << Controls.new(self, @player2,
+      Gosu::Button::KbA =>           :turn_left,
+      Gosu::Button::KbD =>           :turn_right,
+      Gosu::Button::KbW =>           :accelerate,
+      Gosu::Button::KbLeftControl => :boost,
+      Gosu::Button::KbS =>           :reverse,
+      Gosu::Button::KbLeftShift =>   :shoot
+    )
   end
   
   def remove_collided
@@ -88,23 +117,7 @@ class GameWindow < Gosu::Window
   end
   
   def handle_input
-    @player.turn_left if button_down? Gosu::Button::KbLeft
-    @player.turn_right if button_down? Gosu::Button::KbRight
-    
-    if button_down? Gosu::Button::KbUp
-      if ( (button_down? Gosu::Button::KbRightShift) || (button_down? Gosu::Button::KbLeftShift) )
-        @player.boost
-      else
-        @player.accelerate
-      end
-    elsif button_down? Gosu::Button::KbDown
-      @player.reverse
-    end
-    
-    if button_down? Gosu::Button::KbSpace
-      bullet = @player.shoot @space
-      @bullets << bullet if bullet
-    end
+    @controls.each &:handle
   end
   
   def reset_forces
@@ -113,18 +126,37 @@ class GameWindow < Gosu::Window
     # force applied this SUBSTEP; which is probably not the behavior you want
     # We reset the forces on the Player each SUBSTEP for this reason
     #
-    @player.shape.body.reset_forces
+    @player1.shape.body.reset_forces
+    @player2.shape.body.reset_forces
   end
   
   def wrap_around
     # Wrap around the screen to the other side
-    @player.validate_position
+    @player1.validate_position
+    @player2.validate_position
   end
   
   def step_once
     # Perform the step over @dt period of time
     # For best performance @dt should remain consistent for the game
     @space.step @dt
+  end
+  
+  # TODO refactor
+  #
+  def check_score
+    remove = []
+    @asteroids.each do |asteroid|
+      if asteroid.scoring?
+        @player1.score! if asteroid.top_goal?
+        @player2.score! if asteroid.bottom_goal?
+        remove << asteroid
+      end
+    end
+    remove.each do |asteroid|
+      @remove_shapes << asteroid.shape
+      @asteroids.delete asteroid
+    end
   end
   
   def maybe_add_asteroid
@@ -145,15 +177,18 @@ class GameWindow < Gosu::Window
       handle_input
       step_once
     end
+    check_score
     maybe_add_asteroid
   end
 
   def draw
     @background_image.draw 0, 0, ZOrder::Background, 1.5, 1.2
-    @player.draw
+    @player1.draw
+    @player2.draw
     @asteroids.each &:draw
     @bullets.each &:draw
-    @font.draw "Score: #{@score}", 10, 10, ZOrder::UI, 1.0, 1.0, 0xffffff00
+    @font.draw "P1 Score: #{@player1.score}", 10, SCREEN_HEIGHT-30, ZOrder::UI, 1.0, 1.0, 0xffff0000
+    @font.draw "P2 Score: #{@player2.score}", SCREEN_WIDTH-110, 10, ZOrder::UI, 1.0, 1.0, 0xff00ff00
   end
 
   def button_down id
