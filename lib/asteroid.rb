@@ -19,7 +19,7 @@ class Asteroid < Moveable
   end
 
   def draw
-    @image.draw(@shape.body.p.x - @image.width / 2.0, @shape.body.p.y - @image.height / 2.0, ZOrder::Stars, 1, 1, @color, :additive)
+    @image.draw(@shape.body.p.x - @image.width / 2.0, @shape.body.p.y - @image.height / 2.0, ZOrder::Stars, 1, 1)
   end
   
 end

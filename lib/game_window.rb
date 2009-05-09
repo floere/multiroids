@@ -24,7 +24,8 @@ class GameWindow < Gosu::Window
     # This is not realistic behavior in a vacuum of space, but it gives the game
     # the feel I'd like in this situation
     @space = CP::Space.new
-    @space.damping = 0.8
+    # @space.damping = 0.8
+    @space.damping = 0.9
     
     @player = Player.new self
     @player.add_to @space
