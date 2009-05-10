@@ -13,42 +13,27 @@ class Gun < Moveable
     
     @image = Gosu::Image.new window, "media/gun.png", false
     
-    @shape = CP::Shape::Circle.new CP::Body.new(10.0, 75.0), 11.0, CP::Vec2.new(0, 0)
+    @shape = CP::Shape::Circle.new CP::Body.new(1000.0, 75.0), 11.0, CP::Vec2.new(0, 0)
     
     @shape.collision_type = :gun
     
+    skill = 0.05
+    
     self.shoots Bullet
+    self.muzzle_position_func { self.position }
+    self.muzzle_velocity_func { |target| (target.position - self.position + self.random_vector(1/skill)).normalize }
+    self.muzzle_rotation_func { self.rotation }
+    self.range = 300
+    self.frequency = 1
   end
   
   def random_vector strength
     CP::Vec2.new(rand, rand).normalize! * strength
   end
   
-  def muzzle_position
-    self.position
-  end
-  def muzzle_velocity target
-    (target.position - self.position).normalize * 80 + random_vector(20)
-  end
-  def muzzle_rotation
-    self.rotation
-  end
-  def shot_lifetime
-    3
-  end
   def target *targets
     target = acquire *targets
     shoot target
-  end
-  def shoot? target
-    target.distance_from(self) < 300
-  end
-  def shoot target
-    return unless shoot? target
-    sometimes :bullet_loaded, 1.0 do
-      bullet = self.shot.shoot_from self
-      bullet.speed = self.muzzle_velocity target
-    end
   end
   
   def validate_position

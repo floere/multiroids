@@ -29,6 +29,9 @@ class Nuke < Moveable
     self.rotation = -2 * Math::PI / 3
     
     @shape.collision_type = :nuke
+    
+    self.lifetime = 10
+    self.velocity = 2
   end
   
   # TODO extract into module

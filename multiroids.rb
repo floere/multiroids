@@ -34,6 +34,7 @@ require 'lib/shot'
 
 require 'lib/player'
 require 'lib/gun'
+require 'lib/nuke_launcher'
 require 'lib/asteroid'
 require 'lib/bullet'
 require 'lib/controls'

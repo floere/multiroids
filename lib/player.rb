@@ -36,43 +36,16 @@ class Player < Moveable
     @shape.collision_type = :ship
     
     self.shoots Bullet
-  end
-  
-  def muzzle_position
-    self.position + self.direction_to_earth * 20
-  end
-  def muzzle_velocity
-    self.direction_to_earth
-  end
-  def muzzle_rotation
-    self.rotation
-  end
-  def shot_lifetime
-    4
-  end
-  
-  def score!
-    @score += 10
+    self.muzzle_position_func { self.position + self.direction_to_earth * 20 }
+    self.muzzle_velocity_func { |target| self.direction_to_earth }
+    self.muzzle_rotation_func { self.rotation }
+    self.frequency = 2
   end
   
   def colorize red, green, blue
     @color.red = red
     @color.green = green
     @color.blue = blue
-  end
-  
-  # Apply reverse force
-  # See accelerate for more details
-  #
-  def reverse
-    deceleration = [@deceleration, (@top_speed-self.current_speed)].min
-    @shape.body.apply_force(-(rotation_vector * (deceleration / SUBSTEPS)), CP::Vec2.new(0.0, 0.0))
-  end
-  
-  def shoot
-    sometimes :bullet_loaded, 0.5 do
-      self.shot.shoot_from self
-    end
   end
   
   # Wrap to the other side of the screen when we fly off the edge.

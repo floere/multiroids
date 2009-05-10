@@ -13,6 +13,9 @@ class Bullet < Moveable
                                    1.0,
                                    CP::Vec2.new(0.0, 0.0))
     @shape.collision_type = :bullet
+    
+    self.lifetime = 3
+    self.velocity = 80
   end
   
   def self.shoot_from shooter

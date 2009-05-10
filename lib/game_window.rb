@@ -39,17 +39,17 @@ class GameWindow < Gosu::Window
     city.put_on_surface
     register city
     
-    nuke_gun = Gun.new self
-    nuke_gun.warp CP::Vec2.new(100, 100)
-    nuke_gun.put_on_surface -5
-    nuke_gun.shoots Nuke
-    register nuke_gun
+    launcher = NukeLauncher.new self
+    launcher.warp CP::Vec2.new(50, 100)
+    launcher.put_on_surface -5
+    launcher.shoots Nuke
+    register launcher
     
-    bullet_gun = Gun.new self
-    bullet_gun.warp CP::Vec2.new(SCREEN_WIDTH-100, 100)
-    bullet_gun.put_on_surface -5
-    bullet_gun.shoots Bullet
-    register bullet_gun
+    gun = Gun.new self
+    gun.warp CP::Vec2.new(SCREEN_WIDTH-100, 50)
+    gun.put_on_surface -5
+    gun.shoots Bullet
+    register gun
     
     add_player1
     add_player2
@@ -113,7 +113,7 @@ class GameWindow < Gosu::Window
   #
   def add_player1
     @player1 = Player.new self
-    @player1.warp CP::Vec2.new(SCREEN_WIDTH/2, SCREEN_HEIGHT/2) # move to the center of the window
+    @player1.warp CP::Vec2.new(SCREEN_WIDTH-100, SCREEN_HEIGHT/2) # move to the center of the window
     # @player1.colorize 255, 0, 0
     
     @controls << Controls.new(self, @player1,
@@ -131,19 +131,18 @@ class GameWindow < Gosu::Window
   #
   def add_player2
     @player2 = Player.new self
-    # @player2.warp CP::Vec2.new(SCREEN_WIDTH-100, 20) # move to the center of the window
+    @player2.warp CP::Vec2.new(100, SCREEN_HEIGHT/2) # move to the center of the window
     # @player2.colorize 0, 255, 0
-    # 
-    # @controls << Controls.new(self, @player2,
-    #   Gosu::Button::KbA =>           :turn_left,
-    #   Gosu::Button::KbD =>           :turn_right,
-    #   Gosu::Button::KbW =>           :accelerate,
-    #   Gosu::Button::KbLeftControl => :boost,
-    #   Gosu::Button::KbS =>           :reverse,
-    #   Gosu::Button::KbLeftShift =>   :shoot
-    # )
-    # 
-    # register @player2
+    
+    @controls << Controls.new(self, @player2,
+      Gosu::Button::KbA =>           :left,
+      Gosu::Button::KbD =>           :right,
+      Gosu::Button::KbW =>           :away,
+      Gosu::Button::KbS =>           :closer,
+      Gosu::Button::KbLeftShift =>   :shoot
+    )
+    
+    register @player2
   end
   
   def remove_collided

@@ -58,13 +58,14 @@ class Moveable
   
   # Some things you can only do every x seconds.
   #
-  def sometimes variable, seconds, &block
-    return unless instance_variable_get(:"@#{variable}")
-    instance_variable_set :"@#{variable}", false
+  def sometimes variable, frequency = 1, &block
+    name = :"@#{variable}"
+    return if instance_variable_get(name)
+    instance_variable_set name, true
     result = block.call
     Thread.new do
-      sleep seconds
-      instance_variable_set :"@#{variable}", true
+      sleep(1.0 / frequency)
+      instance_variable_set name, false
     end
     result
   end
