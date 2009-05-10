@@ -27,8 +27,10 @@ require 'lib/targeting'
 require 'lib/moveable'
 require 'lib/turnable'
 require 'lib/accelerateable'
+require 'lib/earth_oriented'
 
 require 'lib/player'
+require 'lib/gun'
 require 'lib/asteroid'
 require 'lib/bullet'
 require 'lib/controls'
@@ -36,6 +38,9 @@ require 'lib/earth'
 require 'lib/city'
 require 'lib/nuke'
 require 'lib/game_window'
+
+EARTH_POSITION = CP::Vec2.new(SCREEN_WIDTH / 2, SCREEN_HEIGHT + 100)
+EARTH_RADIUS   = 320
 
 window = GameWindow.new
 window.show

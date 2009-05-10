@@ -2,8 +2,7 @@
 #
 class Player < Moveable
   
-  include Turnable
-  include Accelerateable
+  include EarthOriented
   
   attr_reader :score
   
@@ -12,30 +11,25 @@ class Player < Moveable
     
     @score = 0
     
-    @boost_enabled = true
     @bullet_loaded = true
-    
-    @color = Gosu::Color.new 0xff000000
-    
-    body = CP::Body.new 10.0, 75.0
-    
-    shape_array = [CP::Vec2.new(-10.0, -10.0), CP::Vec2.new(-10.0, 10.0), CP::Vec2.new(10.0, 1.0), CP::Vec2.new(10.0, -1.0)]
-    @shape = CP::Shape::Poly.new body, shape_array, CP::Vec2.new(0,0)
     
     @image = Gosu::Image.new window, "media/spaceship.png", false
     
-    # up-/downgradeable
-    self.turn_speed     = 0.1
-    self.acceleration   = 800.0
-    self.top_speed      = 200.0
+    @shape = CP::Shape::Circle.new CP::Body.new(10.0, 75.0), 11.0, CP::Vec2.new(0, 0)
     
-    @boost_acceleration = 100_000.0
+    # up-/downgradeable
+    # self.turn_speed     = 0.1
+    # self.acceleration   = 150.0
+    # self.top_speed      = 200.0
+    
+    self.friction       = 1.0
+    
     @deceleration       = 200.0
     
     # Keep in mind that down the screen is positive y, which means that PI/2 radians,
     # which you might consider the top in the traditional Trig unit circle sense is actually
     # the bottom; thus 3PI/2 is the top
-    direction = 3 * Math::PI / 2.0
+    self.rotation = Math::PI
     
     @shape.collision_type = :ship
   end
@@ -50,14 +44,14 @@ class Player < Moveable
     @color.blue = blue
   end
   
-  # Apply even more forward force.
-  # See accelerate for more details.
-  #
-  def boost
-    sometimes :boost_enabled, 5 do
-      @shape.body.apply_force((rotation_vector * (@boost_acceleration / SUBSTEPS)), CP::Vec2.new(0.0, 0.0))
-    end
-  end
+  # # Apply even more forward force.
+  # # See accelerate for more details.
+  # #
+  # def boost
+  #   sometimes :boost_enabled, 5 do
+  #     @shape.body.apply_force((rotation_vector * (@boost_acceleration / SUBSTEPS)), CP::Vec2.new(0.0, 0.0))
+  #   end
+  # end
   
   # Apply reverse force
   # See accelerate for more details
@@ -69,14 +63,23 @@ class Player < Moveable
   
   def shoot
     sometimes :bullet_loaded, 0.2 do
-      bullet = Bullet.new @window
-      bullet.shoot_from self
-      bullet.add_to @window.space
-      bullet
+      Bullet.shoot_from self
+    end
+  end
+  
+  # Wrap to the other side of the screen when we fly off the edge.
+  #
+  def validate_position
+    align_to_earth
+    if position.x > SCREEN_WIDTH || position.x < 0
+      @shape.body.v.x = -@shape.body.v.x
+    end
+    if position.y > SCREEN_HEIGHT || position.y < 0
+      @shape.body.v.y = -@shape.body.v.y
     end
   end
   
   def draw
-    @image.draw_rot(@shape.body.p.x, @shape.body.p.y, ZOrder::Player, drawing_rotation, 1.0, 1.0, 1.0, 1.0, @color)
+    @image.draw_rot self.position.x, self.position.y, ZOrder::Player, drawing_rotation
   end
 end

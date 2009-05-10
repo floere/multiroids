@@ -2,7 +2,7 @@
 #
 class Moveable
   
-  attr_reader :shape
+  attr_reader :window, :shape
   
   def initialize window
     @window = window
@@ -46,7 +46,14 @@ class Moveable
   end
   
   def drawing_rotation
-    rotation.radians_to_gosu
+    self.rotation.radians_to_gosu
+  end
+  
+  def friction= friction
+    @shape.u = friction
+  end
+  def friction
+    @shape.u
   end
   
   # Some things you can only do every x seconds.
@@ -82,13 +89,7 @@ class Moveable
   # Wrap to the other side of the screen when we fly off the edge.
   #
   def validate_position
-    if position.x > SCREEN_WIDTH || position.x < 0
-      @shape.body.v.x = -@shape.body.v.x
-    end
-    if position.y > SCREEN_HEIGHT || position.y < 0
-      @shape.body.v.y = -@shape.body.v.y
-    end
-    # self.position = CP::Vec2.new(position.x % SCREEN_WIDTH, position.y % SCREEN_HEIGHT)
+    
   end
   
   def add_to space

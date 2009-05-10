@@ -1,28 +1,37 @@
 #
 class Bullet < Moveable
   
+  include EarthOriented
+  
   def initialize window
     super window
     
-    @speed = 40.0
-    
     @image = Gosu::Image.new window, "media/bullet.png", false
+    
     @shape = CP::Shape::Circle.new(CP::Body.new(0.1, 0.1),
                                    1.0,
                                    CP::Vec2.new(0.0, 0.0))
-    @shape.collision_type = :circle
-    
-    # @shape.body.p = CP::Vec2.new(rand * SCREEN_WIDTH, rand * SCREEN_HEIGHT) # position
-    # @shape.body.v = CP::Vec2.new(rand(40) - 20, rand(40)-20) # velocity
-    # @shape.body.a = 3 * Math::PI / 2.0 # angle in radians; faces towards top of screen
-    
     @shape.collision_type = :bullet
   end
   
-  def shoot_from player
-    # self.position = player.position
-    self.speed = player.rotation_as_vector @speed
-    self.rotation = player.rotation
+  def self.shoot_from shooter
+    bullet = new shooter.window
+    bullet.shoot_from shooter
+  end
+  
+  def validate_position
+    closer
+  end
+  
+  def shoot_from shooter
+    self.position = shooter.position - self.direction_to_earth.normalize * 100
+    self.speed = self.direction_to_earth.normalize * 40
+    self.rotation = shooter.rotation
+    @window.register self
+    Thread.new do
+      sleep 4 
+      @window.unregister self
+    end
   end
   
   def draw

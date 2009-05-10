@@ -28,30 +28,45 @@ class GameWindow < Gosu::Window
   
   def setup_space
     @space = CP::Space.new
-    @space.damping = 0.97
+    @space.damping = 0.8
   end
   
   def setup_objects
-    add_player1
-    add_player2
-    
     register Earth.new(self)
     
     nuke = Nuke.new self
-    nuke.warp CP::Vec2.new(SCREEN_WIDTH - 50, SCREEN_HEIGHT - 50)
+    nuke.warp CP::Vec2.new(SCREEN_WIDTH, SCREEN_HEIGHT)
     register nuke
+    
+    city = City.new self
+    city.warp CP::Vec2.new(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
+    city.put_on_surface
+    register city
+    
+    add_player1
+    add_player2
   end
   
   def setup_collisions
-    @space.add_collision_func :ship, :bullet, &nil
-    
-    @space.add_collision_func :bullet, :bullet do |bullet_shape1, bullet_shape2|
-      remove bullet_shape1
-      remove bullet_shape2
+    @space.add_collision_func :city, :earth, &nil
+    @space.add_collision_func :ship, :bullet do |ship_shape, bullet_shape|
+      remove ship_shape
+      remove bullet_shape
     end
     
-    @space.add_collision_func :ship, :earth do |ship_shape, earth_shape|
-      
+    # @space.add_collision_func :bullet, :bullet do |bullet_shape1, bullet_shape2|
+    #   remove bullet_shape1
+    #   remove bullet_shape2
+    # end
+    
+    @space.add_collision_func :ship, :earth do |ship_shape, earth_shape| end
+    @space.add_collision_func :ship, :nuke do |ship_shape, nuke_shape|
+      remove ship_shape
+      remove nuke_shape
+    end
+    @space.add_collision_func :bullet, :nuke do |bullet_shape, nuke_shape|
+      remove bullet_shape
+      remove nuke_shape
     end
   end
   
@@ -90,15 +105,14 @@ class GameWindow < Gosu::Window
   #
   def add_player1
     @player1 = Player.new self
-    @player1.warp CP::Vec2.new(100, 20) # move to the center of the window
-    @player1.colorize 255, 0, 0
+    @player1.warp CP::Vec2.new(SCREEN_WIDTH/2, SCREEN_HEIGHT/2) # move to the center of the window
+    # @player1.colorize 255, 0, 0
     
     @controls << Controls.new(self, @player1,
-      Gosu::Button::KbLeft =>       :turn_left,
-      Gosu::Button::KbRight =>      :turn_right,
-      Gosu::Button::KbUp =>         :accelerate,
-      Gosu::Button::KbRightShift => :boost,
-      Gosu::Button::KbDown =>       :reverse,
+      Gosu::Button::KbLeft =>       :left,
+      Gosu::Button::KbRight =>      :right,
+      Gosu::Button::KbUp =>         :away,
+      Gosu::Button::KbDown =>       :closer,
       Gosu::Button::KbSpace =>      :shoot
     )
     
@@ -157,9 +171,8 @@ class GameWindow < Gosu::Window
   
   # Checks whether
   #
-  def check_walls
-    @player1.validate_position
-    @player2.validate_position
+  def validate
+    @moveables.each &:validate_position
   end
   
   def step_once
@@ -182,7 +195,7 @@ class GameWindow < Gosu::Window
     SUBSTEPS.times do
       remove_collided
       reset_forces
-      check_walls
+      validate
       targeting
       handle_input
       step_once

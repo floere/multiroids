@@ -19,13 +19,13 @@ class Nuke < Moveable
     @image = Gosu::Image.new window, "media/nuke.png", false
     
     # up-/downgradeable
-    self.turn_speed     = 0.1
-    self.acceleration   = 0.1
-    self.top_speed      = 3
+    self.turn_speed     = 0.5
+    self.acceleration   = 0.3
+    self.top_speed      = 2.0
     
-    @deceleration       = 0.1
+    self.friction       = 50.0
     
-    self.rotation = -2*Math::PI/3
+    self.rotation = -2 * Math::PI / 3
     
     @shape.collision_type = :nuke
   end
