@@ -86,8 +86,7 @@ class GameWindow < Gosu::Window
   #
   def add_player1
     @player1 = Player.new self
-    # @player1.add_to @space
-    @player1.warp CP::Vec2.new(SCREEN_WIDTH/2, SCREEN_HEIGHT-20) # move to the center of the window
+    @player1.warp CP::Vec2.new(100, 20) # move to the center of the window
     @player1.colorize 255, 0, 0
     
     @controls << Controls.new(self, @player1,
@@ -106,8 +105,7 @@ class GameWindow < Gosu::Window
   #
   def add_player2
     @player2 = Player.new self
-    # @player2.add_to @space
-    @player2.warp CP::Vec2.new(SCREEN_WIDTH/2, 20) # move to the center of the window
+    @player2.warp CP::Vec2.new(SCREEN_WIDTH-100, 20) # move to the center of the window
     @player2.colorize 0, 255, 0
     
     @controls << Controls.new(self, @player2,
@@ -133,7 +131,6 @@ class GameWindow < Gosu::Window
     #
     @remove_shapes.each do |shape|
       @moveables.delete_if { |moveable| moveable.shape == shape }
-      # @asteroids.delete_if { |asteroid| asteroid.shape == shape }
       @space.remove_body shape.body
       @space.remove_shape shape
     end
@@ -167,6 +164,12 @@ class GameWindow < Gosu::Window
     @space.step @dt
   end
   
+  def targeting
+    @moveables.select { |m| m.respond_to? :target }.each do |moveable|
+      moveable.target @player1, @player2
+    end
+  end
+  
   #
   #
   def update
@@ -176,6 +179,7 @@ class GameWindow < Gosu::Window
       remove_collided
       reset_forces
       check_walls
+      targeting
       handle_input
       step_once
     end

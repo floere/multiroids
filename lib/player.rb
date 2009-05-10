@@ -14,21 +14,12 @@ class Player < Moveable
     
     @color = Gosu::Color.new 0xff000000
     
-    # Create the Body for the Player
     body = CP::Body.new 10.0, 75.0
     
-    # In order to create a shape, we must first define it
-    # Chipmunk defines 3 types of Shapes: Segments, Circles and Polys
-    # We'll use s simple, 4 sided Poly for our Player (ship)
-    # You need to define the vectors so that the "top" of the Shape is towards 0 radians (the right)
-    #
     shape_array = [CP::Vec2.new(-10.0, -10.0), CP::Vec2.new(-10.0, 10.0), CP::Vec2.new(10.0, 1.0), CP::Vec2.new(10.0, -1.0)]
     @shape = CP::Shape::Poly.new body, shape_array, CP::Vec2.new(0,0)
     
     @image = Gosu::Image.new window, "media/spaceship.png", false
-    
-    @shape.body.p = CP::Vec2.new 0.0, 0.0 # position
-    @shape.body.v = CP::Vec2.new 0.0, 0.0 # velocity
     
     # up-/downgradeable
     @rotation           = 100.0
