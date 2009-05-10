@@ -2,7 +2,9 @@
 #
 class Nuke < Moveable
   
-  include TargetAcquisition
+  include Targeting
+  include Turnable
+  include Accelerateable
   
   attr_reader :score
   
@@ -17,10 +19,11 @@ class Nuke < Moveable
     @image = Gosu::Image.new window, "media/nuke.png", false
     
     # up-/downgradeable
-    @rotation           = 0.1
-    @acceleration       = 0.1
+    self.turn_speed     = 0.1
+    self.acceleration   = 0.1
+    self.top_speed      = 3
+    
     @deceleration       = 0.1
-    @top_speed          = 3
     
     self.rotation = -2*Math::PI/3
     
@@ -40,6 +43,8 @@ class Nuke < Moveable
     direct = target.position - self.position
     angle = (self.rotation - direct.to_angle) % (Math::PI*2)
     
+    # puts rotation
+    
     case angle
     when 0..Math::PI : turn_left
     when Math::PI..(2*Math::PI) : turn_right
@@ -47,23 +52,7 @@ class Nuke < Moveable
     
     case angle + Math::PI/2
     when 0..Math::PI : accelerate
-    when Math::PI..(2*Math::PI) : reverse
     end
-  end
-  
-  def turn_left
-    self.rotation -= @rotation / SUBSTEPS
-  end
-  def turn_right
-    self.rotation += @rotation / SUBSTEPS
-  end
-  def accelerate
-    acceleration = [@acceleration, (@top_speed - self.current_speed)].min
-    @shape.body.apply_force((rotation_vector * (acceleration / SUBSTEPS)), CP::Vec2.new(0.0, 0.0))
-  end
-  def reverse
-    deceleration = [@deceleration, (@top_speed - self.current_speed)].min
-    @shape.body.apply_force(-(rotation_vector * (deceleration / SUBSTEPS)), CP::Vec2.new(0.0, 0.0))
   end
   
   def draw

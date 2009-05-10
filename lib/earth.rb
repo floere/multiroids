@@ -1,4 +1,4 @@
-#
+# The earth.
 #
 class Earth < Moveable
   

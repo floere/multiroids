@@ -2,6 +2,9 @@
 #
 class Player < Moveable
   
+  include Turnable
+  include Accelerateable
+  
   attr_reader :score
   
   def initialize window
@@ -22,11 +25,12 @@ class Player < Moveable
     @image = Gosu::Image.new window, "media/spaceship.png", false
     
     # up-/downgradeable
-    @rotation           = 0.1
-    @acceleration       = 800.0
+    self.turn_speed     = 0.1
+    self.acceleration   = 800.0
+    self.top_speed      = 200.0
+    
     @boost_acceleration = 100_000.0
     @deceleration       = 200.0
-    @top_speed          = 200.0
     
     # Keep in mind that down the screen is positive y, which means that PI/2 radians,
     # which you might consider the top in the traditional Trig unit circle sense is actually
@@ -44,34 +48,6 @@ class Player < Moveable
     @color.red = red
     @color.green = green
     @color.blue = blue
-  end
-  
-  # Apply negative Torque; Chipmunk will do the rest
-  # SUBSTEPS is used as a divisor to keep turning rate constant
-  # even if the number of steps per update are adjusted
-  #
-  def turn_left
-    self.rotation = self.rotation - @rotation / SUBSTEPS
-  end
-  
-  # Apply positive Torque; Chipmunk will do the rest
-  # SUBSTEPS is used as a divisor to keep turning rate constant
-  # even if the number of steps per update are adjusted
-  #
-  def turn_right
-    self.rotation = self.rotation + @rotation / SUBSTEPS
-  end
-  
-  # Apply forward force; Chipmunk will do the rest
-  # SUBSTEPS is used as a divisor to keep acceleration rate constant
-  # even if the number of steps per update are adjusted
-  # Here we must convert the angle (facing) of the body into
-  # forward momentum by creating a vector in the direction of the facing
-  # and with a magnitude representing the force we want to apply.
-  #
-  def accelerate
-    acceleration = [@acceleration, (@top_speed-self.current_speed)].min
-    @shape.body.apply_force((rotation_vector * (acceleration / SUBSTEPS)), CP::Vec2.new(0.0, 0.0))
   end
   
   # Apply even more forward force.

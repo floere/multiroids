@@ -1,4 +1,4 @@
-module TargetAcquisition
+module Targeting
   
   # Returns the closest target.
   #
