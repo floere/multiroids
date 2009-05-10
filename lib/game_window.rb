@@ -8,67 +8,46 @@ class GameWindow < Gosu::Window
   def initialize
     super SCREEN_WIDTH, SCREEN_HEIGHT, false, 16
     
+    init
+    setup_space
+    setup_objects
+    setup_collisions
+  end
+  
+  def init
     self.caption = "MULTIROOOOIDS!"
-    
     @background_image = Gosu::Image.new self, 'media/Space.png', true
-
-    # Put the beep here, as it is the environment now that determines collision
-    @beep = Gosu::Sample.new self, 'media/Beep.wav'
-    
-    # Put the score here, as it is the environment that tracks this now
+    @beep = Gosu::Sample.new self, 'media/beep.wav'
     @score = 0
     @font = Gosu::Font.new self, Gosu::default_font_name, 20
-    
-    # Time increment over which to apply a physics "step" ("delta t")
-    @dt = 1.0 / 60.0
-    
-    # Create our Space and set its damping
-    # A damping of 0.8 causes the ship bleed off its force and torque over time
-    # This is not realistic behavior in a vacuum of space, but it gives the game
-    # the feel I'd like in this situation
-    @space = CP::Space.new
-    # @space.damping = 0.8
-    @space.damping = 0.97
-    
-    # Replace these with moveables.
-    #
-    # @asteroids = []
-    # @bullets = []
-    
     @moveables = []
-    
     @controls = []
-    
+    @remove_shapes = []
+    @dt = 1.0 / 60.0
+  end
+  
+  def setup_space
+    @space = CP::Space.new
+    @space.damping = 0.97
+  end
+  
+  def setup_objects
     add_player1
     add_player2
     
-    # Here we define what is supposed to happen when a Player (ship) collides with a Star
-    # I create a @remove_shapes array because we cannot remove either Shapes or Bodies
-    # from Space within a collision closure, rather, we have to wait till the closure
-    # is through executing, then we can remove the Shapes and Bodies
-    # In this case, the Shapes and the Bodies they own are removed in the Gosu::Window.update phase
-    # by iterating over the @remove_shapes array
-    # Also note that both Shapes involved in the collision are passed into the closure
-    # in the same order that their collision_types are defined in the add_collision_func call
-    @remove_shapes = []
-    @space.add_collision_func :ship, :asteroid do |ship_shape, asteroid_shape|
-      
-    end
-    
+    register Earth.new(self)
+  end
+  
+  def setup_collisions
     @space.add_collision_func :ship, :bullet, &nil
-    
-    # Here we tell Space that we don't want one star bumping into another
-    # The reason we need to do this is because when the Player hits a Star,
-    # the Star will travel until it is removed in the update cycle below
-    # which means it may collide and therefore push other Stars
-    #
-    # To see the effect, remove this line and play the game, every once in a while
-    # you'll see a Star moving
-    @space.add_collision_func :asteroid, :asteroid, &nil
     
     @space.add_collision_func :bullet, :bullet do |bullet_shape1, bullet_shape2|
       remove bullet_shape1
       remove bullet_shape2
+    end
+    
+    @space.add_collision_func :ship, :earth do |ship_shape, earth_shape|
+      
     end
   end
   
@@ -175,8 +154,9 @@ class GameWindow < Gosu::Window
     @player2.shape.body.reset_forces
   end
   
-  def wrap_around
-    # Wrap around the screen to the other side
+  # Checks whether
+  #
+  def check_walls
     @player1.validate_position
     @player2.validate_position
   end
@@ -187,29 +167,6 @@ class GameWindow < Gosu::Window
     @space.step @dt
   end
   
-  # TODO refactor
-  #
-  def check_score
-    remove = []
-    @moveables.each do |moveable|
-      if moveable.respond_to?(:scoring?) && moveable.scoring?
-        @player1.score! if moveable.top_goal?
-        @player2.score! if moveable.bottom_goal?
-        remove << moveable
-      end
-    end
-    remove.each do |moveable|
-      @remove_shapes << moveable.shape
-      @moveables.delete moveable
-    end
-  end
-  
-  #
-  #
-  def maybe_add_asteroid
-    register Asteroid.new(self) if @moveables.size < 3
-  end
-  
   #
   #
   def update
@@ -218,12 +175,10 @@ class GameWindow < Gosu::Window
     SUBSTEPS.times do
       remove_collided
       reset_forces
-      wrap_around
+      check_walls
       handle_input
       step_once
     end
-    check_score
-    maybe_add_asteroid
   end
   
   def draw_background

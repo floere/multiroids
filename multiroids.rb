@@ -27,6 +27,8 @@ require 'lib/player'
 require 'lib/asteroid'
 require 'lib/bullet'
 require 'lib/controls'
+require 'lib/earth'
+require 'lib/city'
 require 'lib/game_window'
 
 window = GameWindow.new
