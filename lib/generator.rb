@@ -18,7 +18,7 @@ module Generator
     
     def start_generating
       # TODO join this thread on generator death
-      @generator_thread = Thread.new do
+      threaded do
         loop do
           sleep 1
           generate

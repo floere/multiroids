@@ -2,10 +2,9 @@ class SmallExplosion < ShortLived
   
   include Hurting
   
-  # self.damage = 10
-  self.lifetime = 0.5
-  
   def initialize window
+    self.lifetime = 0.5
+    
     super window
     
     @image = Gosu::Image::load_tiles window, "media/small_explosion.png", 20, 20, false

@@ -5,7 +5,18 @@ class Moveable
   attr_reader :window, :shape
   
   def initialize window
+    @running_threads = []
     @window = window
+  end
+  
+  def destroy
+    @window.unregister self
+    @running_threads.select { |thread| thread.status == false }.each(&:join)
+    true
+  end
+  
+  def threaded &block
+    @running_threads << Thread.new(&block)
   end
   
   # Directly set the position of our Moveable using a vector.
@@ -69,7 +80,7 @@ class Moveable
     return if instance_variable_get(name)
     instance_variable_set name, true
     result = block.call
-    Thread.new do
+    threaded do
       sleep(1.0 / frequency)
       instance_variable_set name, false
     end

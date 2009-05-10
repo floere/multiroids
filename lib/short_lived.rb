@@ -5,14 +5,17 @@ class ShortLived < Moveable
   def initialize window
     super window
     
-    Thread.new do
+    threaded do
       sleep self.lifetime
       window.unregister self
     end
   end
   
+  def lifetime= duration
+    @lifetime = duration
+  end
   def lifetime
-    self.class.lifetime
+    @lifetime
   end
   
 end

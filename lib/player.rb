@@ -5,6 +5,7 @@ class Player < Moveable
   include EarthOriented
   include Targetable
   include Shooter
+  include Lives
   
   attr_reader :score
   
@@ -17,7 +18,7 @@ class Player < Moveable
     
     @image = Gosu::Image::load_tiles window, "media/spaceship.png", 22, 22, false
     
-    @shape = CP::Shape::Circle.new CP::Body.new(1.0, 1.0), 11.0, CP::Vec2.new(0, 0)
+    @shape = CP::Shape::Circle.new CP::Body.new(0.1, 0.1), 11.0, CP::Vec2.new(0, 0)
     
     # up-/downgradeable
     # self.turn_speed     = 0.1
@@ -40,6 +41,12 @@ class Player < Moveable
     self.muzzle_velocity_func { |target| self.direction_to_earth }
     self.muzzle_rotation_func { self.rotation }
     self.frequency = 2
+    
+    self.lives = 30
+  end
+  
+  def revive
+    window.revive self
   end
   
   def colorize red, green, blue

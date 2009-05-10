@@ -1,6 +1,6 @@
 # This game will have multiple Players in the form of a ship.
 #
-class Nuke < Moveable
+class Nuke < ShortLived
   
   include Targeting
   include Turnable
@@ -8,11 +8,13 @@ class Nuke < Moveable
   include Shot
   include Generator
   
-  generates Puff, 2
+  generates Puff, 3
   
   attr_reader :score
   
   def initialize window
+    self.lifetime = 20
+    
     super window
     
     body = CP::Body.new 10.0, 75.0
@@ -30,7 +32,6 @@ class Nuke < Moveable
     
     @shape.collision_type = :nuke
     
-    self.lifetime = 10
     self.velocity = 2
     
     start_generating

@@ -23,6 +23,7 @@ class GameWindow < Gosu::Window
     @moveables = []
     @controls = []
     @remove_shapes = []
+    @players = []
     @dt = 1.0 / 60.0
   end
   
@@ -41,9 +42,9 @@ class GameWindow < Gosu::Window
   def setup_objects
     register Earth.new(self)
     
-    10.times { randomly_add City }
-    3.times { randomly_add NukeLauncher }
-    5.times { randomly_add Gun }
+    7.times { randomly_add City }
+    2.times { randomly_add NukeLauncher }
+    3.times { randomly_add Gun }
     
     add_player1
     add_player2
@@ -62,10 +63,6 @@ class GameWindow < Gosu::Window
       # just push it away
     end
     @space.add_collision_func :nuke, :ambient, &nil
-    
-    @space.add_collision_func :ship, :explosion do |ship_shape, explosion_shape|
-      # remove ship_shape
-    end
     
     @space.add_collision_func :city, :earth, &nil
     
@@ -95,6 +92,10 @@ class GameWindow < Gosu::Window
     
     @space.add_collision_func :city, :explosion do |city_shape, explosion_shape|
       remove city_shape
+      # TODO add points
+    end
+    @space.add_collision_func :ship, :explosion do |ship_shape, explosion_shape|
+      @players.each { |player| player.shape == ship_shape && player.hit! }
     end
   end
   
@@ -117,7 +118,6 @@ class GameWindow < Gosu::Window
   #       end
   #
   def unregister moveable
-    @moveables.delete moveable # FIXME Make threadable.
     remove moveable.shape
   end
   
@@ -141,8 +141,11 @@ class GameWindow < Gosu::Window
       Gosu::Button::KbD =>           :right,
       Gosu::Button::KbW =>           :away,
       Gosu::Button::KbS =>           :closer,
-      Gosu::Button::KbLeftShift =>   :shoot
+      Gosu::Button::KbLeftShift =>   :shoot,
+      Gosu::Button::Kb1 =>           :revive
     )
+    
+    @players << @player1
     
     register @player1
   end
@@ -159,13 +162,16 @@ class GameWindow < Gosu::Window
       Gosu::Button::KbK =>     :right,
       Gosu::Button::KbU =>     :away,
       Gosu::Button::KbJ =>     :closer,
-      Gosu::Button::KbSpace => :shoot
+      Gosu::Button::KbSpace => :shoot,
+      Gosu::Button::Kb2 =>     :revive
     )
+    
+    @players << @player2
     
     register @player2
   end
   
-  # Adds the second player.
+  # Adds the third player.
   #
   def add_player3
     @player3 = Player.new self
@@ -177,8 +183,11 @@ class GameWindow < Gosu::Window
       Gosu::Button::KbRight =>      :right,
       Gosu::Button::KbUp =>         :away,
       Gosu::Button::KbDown =>       :closer,
-      Gosu::Button::KbRightAlt =>   :shoot
+      Gosu::Button::KbRightAlt =>   :shoot,
+      Gosu::Button::Kb3 =>          :revive
     )
+    
+    @players << @player3
     
     register @player3
   end
@@ -193,11 +202,11 @@ class GameWindow < Gosu::Window
     # of the Stars that were gathered by the Player
     #
     @remove_shapes.each do |shape|
-      @moveables.delete_if { |moveable| moveable.shape == shape }
       @space.remove_body shape.body
       @space.remove_shape shape
+      @moveables.delete_if { |moveable| moveable.shape == shape && moveable.destroy }
     end
-    @remove_shapes.clear # clear out the shapes for next pass
+    @remove_shapes.clear
   end
   
   def handle_input
@@ -210,9 +219,10 @@ class GameWindow < Gosu::Window
     # force applied this SUBSTEP; which is probably not the behavior you want
     # We reset the forces on the Player each SUBSTEP for this reason
     #
-    @player1.shape.body.reset_forces
-    @player2.shape.body.reset_forces
-    @player3.shape.body.reset_forces
+    # @player1.shape.body.reset_forces
+    # @player2.shape.body.reset_forces
+    # @player3.shape.body.reset_forces
+    # @players.each { |player| player.shape.body.reset_forces }
   end
   
   # Checks whether
@@ -231,6 +241,11 @@ class GameWindow < Gosu::Window
     @moveables.select { |m| m.respond_to? :target }.each do |moveable|
       moveable.target @player1, @player2, @player3
     end
+  end
+  
+  def revive player
+    return if @moveables.find { |moveable| moveable == player }
+    register player
   end
   
   #

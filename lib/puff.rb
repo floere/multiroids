@@ -1,8 +1,8 @@
 class Puff < ShortLived
   
-  self.lifetime = 3
-  
   def initialize window
+    self.lifetime = 1
+    
     super window
     
     @image = Gosu::Image::load_tiles window, "media/smoke.png", 10, 10, false

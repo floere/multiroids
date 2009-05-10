@@ -4,9 +4,9 @@ class Bullet < ShortLived
   include EarthOriented
   include Shot
   
-  self.lifetime = 3
-  
   def initialize window
+    self.lifetime = 2
+    
     super window
     
     @image = Gosu::Image.new window, "media/bullet.png", false
@@ -18,7 +18,6 @@ class Bullet < ShortLived
     
     self.friction = 0.1
     self.velocity = 100
-    self.lifetime = 2
   end
   
   def validate_position

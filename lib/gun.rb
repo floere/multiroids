@@ -14,10 +14,9 @@ class Gun < Moveable
     @image = Gosu::Image.new window, "media/gun.png", false
     
     @shape = CP::Shape::Circle.new CP::Body.new(1000.0, 75.0), 11.0, CP::Vec2.new(0, 0)
-    
     @shape.collision_type = :gun
     
-    skill = 0.05
+    skill = rand * 0.5
     
     self.shoots Bullet
     self.muzzle_position_func { self.position + self.direction_from_earth*10 }
