@@ -3,6 +3,7 @@
 class City < Moveable
   
   include EarthOriented
+  include Lives
   
   def initialize window
     super window
@@ -11,6 +12,8 @@ class City < Moveable
     
     @shape = CP::Shape::Circle.new CP::Body.new(10.0, 75.0), 11.0, CP::Vec2.new(0, 0)
     @shape.collision_type = :city
+    
+    self.lives = 100
   end
   
   def validate_position

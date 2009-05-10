@@ -7,7 +7,7 @@ class ShortLived < Moveable
     
     threaded do
       sleep self.lifetime
-      window.unregister self
+      self.destroy
     end
   end
   

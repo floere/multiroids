@@ -9,7 +9,7 @@ class SmallExplosion < ShortLived
     
     @image = Gosu::Image::load_tiles window, "media/small_explosion.png", 20, 20, false
     
-    @shape = CP::Shape::Circle.new CP::Body.new(10_000, 10_000), 5.0, CP::Vec2.new(0, 0)
+    @shape = CP::Shape::Circle.new CP::Body.new(1_000, 1_000), 5.0, CP::Vec2.new(0, 0)
     
     @shape.collision_type = :explosion
   end

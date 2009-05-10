@@ -63,13 +63,9 @@ class GameWindow < Gosu::Window
       # just push it away
     end
     @space.add_collision_func :nuke, :ambient, &nil
+    @space.add_collision_func :bullet, :ambient, &nil
     
     @space.add_collision_func :city, :earth, &nil
-    
-    # @space.add_collision_func :bullet, :bullet do |bullet_shape1, bullet_shape2|
-    #   remove bullet_shape1
-    #   remove bullet_shape2
-    # end
     
     @space.add_collision_func :ship, :earth do |ship_shape, earth_shape| end
     @space.add_collision_func :ship, :nuke do |ship_shape, nuke_shape|
@@ -91,8 +87,7 @@ class GameWindow < Gosu::Window
     end
     
     @space.add_collision_func :city, :explosion do |city_shape, explosion_shape|
-      remove city_shape
-      # TODO add points
+      @moveables.each { |city| city.shape == city_shape && city.hit! }
     end
     @space.add_collision_func :ship, :explosion do |ship_shape, explosion_shape|
       @players.each { |player| player.shape == ship_shape && player.hit! }
@@ -111,7 +106,7 @@ class GameWindow < Gosu::Window
   # Note: Use as follows in a Moveable.
   #       
   #       def destroy
-  #         Thread.new do
+  #         threaded do
   #           5.times { sleep 0.1; animate_explosion }
   #           @window.unregister self
   #         end
@@ -163,7 +158,7 @@ class GameWindow < Gosu::Window
       Gosu::Button::KbU =>     :away,
       Gosu::Button::KbJ =>     :closer,
       Gosu::Button::KbSpace => :shoot,
-      Gosu::Button::Kb2 =>     :revive
+      Gosu::Button::Kb7 =>     :revive
     )
     
     @players << @player2
@@ -184,7 +179,7 @@ class GameWindow < Gosu::Window
       Gosu::Button::KbUp =>         :away,
       Gosu::Button::KbDown =>       :closer,
       Gosu::Button::KbRightAlt =>   :shoot,
-      Gosu::Button::Kb3 =>          :revive
+      Gosu::Button::Kb0 =>          :revive
     )
     
     @players << @player3

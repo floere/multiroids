@@ -6,7 +6,7 @@ module Lives
   
   def hit!
     @lives -= 1
-    @score -= 1
+    @score -= 1 if @score
     destroy if @lives <= 0
   end
   
