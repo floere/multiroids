@@ -28,10 +28,15 @@ class GameWindow < Gosu::Window
     # the feel I'd like in this situation
     @space = CP::Space.new
     # @space.damping = 0.8
-    @space.damping = 0.95
+    @space.damping = 0.97
     
-    @asteroids = []
-    @bullets = []
+    # Replace these with moveables.
+    #
+    # @asteroids = []
+    # @bullets = []
+    
+    @moveables = []
+    
     @controls = []
     
     add_player1
@@ -67,9 +72,42 @@ class GameWindow < Gosu::Window
     end
   end
   
+  # Moveables register themselves here.
+  #
+  def register moveable
+    @moveables << moveable
+    moveable.add_to @space
+  end
+  
+  # Moveables unregister themselves here.
+  #
+  # Note: Use as follows in a Moveable.
+  #       
+  #       def destroy
+  #         Thread.new do
+  #           5.times { sleep 0.1; animate_explosion }
+  #           @window.unregister self
+  #         end
+  #       end
+  #
+  def unregister moveable
+    @moveables.delete moveable # FIXME Make threadable.
+    remove moveable.shape
+  end
+  
+  # Remove this shape the next turn.
+  #
+  # Note: Internal use. Use unregister to properly remove a moveable.
+  #
+  def remove shape
+    @remove_shapes << shape
+  end
+  
+  # Adds the first player.
+  #
   def add_player1
     @player1 = Player.new self
-    @player1.add_to @space
+    # @player1.add_to @space
     @player1.warp CP::Vec2.new(SCREEN_WIDTH/2, SCREEN_HEIGHT-20) # move to the center of the window
     @player1.colorize 255, 0, 0
     
@@ -81,11 +119,15 @@ class GameWindow < Gosu::Window
       Gosu::Button::KbDown =>       :reverse,
       Gosu::Button::KbSpace =>      :shoot
     )
+    
+    register @player1
   end
   
+  # Adds the second player.
+  #
   def add_player2
     @player2 = Player.new self
-    @player2.add_to @space
+    # @player2.add_to @space
     @player2.warp CP::Vec2.new(SCREEN_WIDTH/2, 20) # move to the center of the window
     @player2.colorize 0, 255, 0
     
@@ -97,6 +139,8 @@ class GameWindow < Gosu::Window
       Gosu::Button::KbS =>           :reverse,
       Gosu::Button::KbLeftShift =>   :shoot
     )
+    
+    register @player2
   end
   
   def remove_collided
@@ -109,7 +153,8 @@ class GameWindow < Gosu::Window
     # of the Stars that were gathered by the Player
     #
     @remove_shapes.each do |shape|
-      @asteroids.delete_if { |asteroid| asteroid.shape == shape }
+      @moveables.delete_if { |moveable| moveable.shape == shape }
+      # @asteroids.delete_if { |asteroid| asteroid.shape == shape }
       @space.remove_body shape.body
       @space.remove_shape shape
     end
@@ -146,29 +191,29 @@ class GameWindow < Gosu::Window
   #
   def check_score
     remove = []
-    @asteroids.each do |asteroid|
-      if asteroid.scoring?
-        @player1.score! if asteroid.top_goal?
-        @player2.score! if asteroid.bottom_goal?
-        remove << asteroid
+    @moveables.each do |moveable|
+      if moveable.respond_to?(:scoring?) && moveable.scoring?
+        @player1.score! if moveable.top_goal?
+        @player2.score! if moveable.bottom_goal?
+        remove << moveable
       end
     end
-    remove.each do |asteroid|
-      @remove_shapes << asteroid.shape
-      @asteroids.delete asteroid
+    remove.each do |moveable|
+      @remove_shapes << moveable.shape
+      @moveables.delete moveable
     end
   end
   
+  #
+  #
   def maybe_add_asteroid
-    if @asteroids.size < 1 then
-      asteroid = Asteroid.new self
-      asteroid.add_to @space
-      @asteroids.push asteroid
-    end
+    register Asteroid.new(self) if @moveables.size < 3
   end
   
+  #
+  #
   def update
-    # Step the physics environment SUBSTEPS times each update
+    # Step the physics environment SUBSTEPS times each update.
     #
     SUBSTEPS.times do
       remove_collided
@@ -180,23 +225,30 @@ class GameWindow < Gosu::Window
     check_score
     maybe_add_asteroid
   end
-
-  def draw
+  
+  def draw_background
     @background_image.draw 0, 0, ZOrder::Background, 1.5, 1.2
-    @player1.draw
-    @player2.draw
-    @asteroids.each &:draw
-    @bullets.each &:draw
-    @font.draw "P1 Score: #{@player1.score}", 10, SCREEN_HEIGHT-30, ZOrder::UI, 1.0, 1.0, 0xffff0000
-    @font.draw "P2 Score: #{@player2.score}", SCREEN_WIDTH-110, 10, ZOrder::UI, 1.0, 1.0, 0xff00ff00
-  end
-
-  def button_down id
-    close if id == Gosu::Button::KbEscape
   end
   
-  def remove shape
-    @remove_shapes << shape
+  def draw_moveables
+    @moveables.each &:draw
+  end
+  
+  def draw_ui
+    @font.draw "P1 Score: #{@player1.score}", 10, SCREEN_HEIGHT-30, ZOrder::UI, 1.0, 1.0, 0xffff0000
+    @font.draw "P2 Score: #{@player2.score}", SCREEN_WIDTH-110, 10, ZOrder::UI, 1.0, 1.0, 0xff00ff00    
+  end
+  
+  def draw
+    draw_background
+    draw_moveables
+    draw_ui
+  end
+  
+  # Escape exits.
+  #
+  def button_down id
+    close if id == Gosu::Button::KbEscape
   end
   
 end
