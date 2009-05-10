@@ -14,7 +14,7 @@ class Earth < Moveable
   end
   
   def draw
-    @image.draw position.x-EARTH_RADIUS, position.y-EARTH_RADIUS, ZOrder::Player, 1, 1
+    @image.draw position.x-EARTH_RADIUS, position.y-EARTH_RADIUS, ZOrder::Player, 0.5, 0.5
   end
   
 end

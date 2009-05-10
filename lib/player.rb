@@ -27,7 +27,7 @@ class Player < Moveable
     
     self.friction       = 1.0
     
-    @deceleration       = 200.0
+    @deceleration       = 300.0
     
     # Keep in mind that down the screen is positive y, which means that PI/2 radians,
     # which you might consider the top in the traditional Trig unit circle sense is actually
@@ -69,6 +69,6 @@ class Player < Moveable
   
   def draw
     image = @image[Gosu::milliseconds / 100 % @image.size];
-    image.draw_rot self.position.x, self.position.y, ZOrder::Player, drawing_rotation
+    image.draw_rot self.position.x, self.position.y, ZOrder::Player, drawing_rotation, 0.5, 0.5, 0.5, 0.5
   end
 end

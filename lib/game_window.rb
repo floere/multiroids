@@ -34,7 +34,9 @@ class GameWindow < Gosu::Window
   
   def randomly_add type
     thing = type.new self
-    thing.warp_to rand*SCREEN_WIDTH, SCREEN_HEIGHT - 150
+    
+    thing.warp_to rand*SCREEN_WIDTH, rand*SCREEN_HEIGHT
+    
     thing.put_on_surface
     register thing
   end

@@ -10,7 +10,7 @@ class City < Moveable
     
     @image = Gosu::Image.new window, "media/city.png", false
     
-    @shape = CP::Shape::Circle.new CP::Body.new(10.0, 75.0), 11.0, CP::Vec2.new(0, 0)
+    @shape = CP::Shape::Circle.new CP::Body.new(10000.0, 10000.0), 11.0, CP::Vec2.new(0, 0)
     @shape.collision_type = :city
     
     self.lives = 100

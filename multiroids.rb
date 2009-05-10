@@ -11,8 +11,8 @@ require 'activesupport'
 require 'gosu'
 require 'chipmunk' # A physics framework.
 
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 640
+SCREEN_HEIGHT = 640
 
 # The number of steps to process every Gosu update
 # The Player ship can get going so fast as to "move through" a
@@ -49,8 +49,8 @@ require 'lib/city'
 require 'lib/nuke'
 require 'lib/game_window'
 
-EARTH_POSITION = CP::Vec2.new(SCREEN_WIDTH / 2, SCREEN_HEIGHT + 100)
-EARTH_RADIUS   = 320
+EARTH_POSITION = CP::Vec2.new(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+EARTH_RADIUS   = 160
 
 window = GameWindow.new
 window.show

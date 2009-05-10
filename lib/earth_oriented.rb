@@ -28,21 +28,21 @@ module EarthOriented
   def left
     direction = direction_from_earth
     direction.x, direction.y = direction.y, -direction.x
-    self.position += direction * 0.1
+    self.position += direction * 0.15
   end
   
   def right
     direction = direction_from_earth
     direction.x, direction.y = -direction.y, direction.x
-    self.position += direction * 0.1
+    self.position += direction * 0.15
   end
   
   def away
-    self.position += direction_from_earth * 0.1
+    self.position += direction_from_earth * 0.15
   end
   
   def closer
-    self.position += direction_to_earth * 0.1
+    self.position += direction_to_earth * 0.15
   end
   
 end
