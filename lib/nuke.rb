@@ -6,6 +6,9 @@ class Nuke < Moveable
   include Turnable
   include Accelerateable
   include Shot
+  include Generator
+  
+  generates Puff, 2
   
   attr_reader :score
   
@@ -21,17 +24,16 @@ class Nuke < Moveable
     
     # up-/downgradeable
     self.turn_speed     = 0.5
-    self.acceleration   = 0.3
-    self.top_speed      = 2.0
+    self.acceleration   = 0.05
     
     self.friction       = 50.0
-    
-    self.rotation = -2 * Math::PI / 3
     
     @shape.collision_type = :nuke
     
     self.lifetime = 10
     self.velocity = 2
+    
+    start_generating
   end
   
   # TODO extract into module

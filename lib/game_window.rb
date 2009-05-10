@@ -35,31 +35,50 @@ class GameWindow < Gosu::Window
     register Earth.new(self)
     
     city = City.new self
-    city.warp CP::Vec2.new(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
+    city.warp_to SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2
     city.put_on_surface
     register city
     
     launcher = NukeLauncher.new self
-    launcher.warp CP::Vec2.new(50, 100)
+    launcher.warp_to SCREEN_WIDTH - 100, 100
     launcher.put_on_surface -5
     launcher.shoots Nuke
     register launcher
     
     gun = Gun.new self
-    gun.warp CP::Vec2.new(SCREEN_WIDTH-100, 50)
+    gun.warp_to 100, 50
     gun.put_on_surface -5
     gun.shoots Bullet
     register gun
+    
+    explosion = Puff.new self
+    explosion.warp_to 200, 200
+    register explosion
     
     add_player1
     add_player2
   end
   
+  def small_explosion shape
+    explosion = SmallExplosion.new self
+    explosion.warp shape.body.p
+    remove shape
+    register explosion
+  end
+  
   def setup_collisions
+    @space.add_collision_func :ship, :ambient do |ship_shape, ambient_shape|
+      # just push it away
+    end
+    @space.add_collision_func :nuke, :ambient, &nil
+    
+    @space.add_collision_func :ship, :explosion do |ship_shape, explosion_shape|
+      # remove ship_shape
+    end
+    
     @space.add_collision_func :city, :earth, &nil
     @space.add_collision_func :ship, :bullet do |ship_shape, bullet_shape|
-      remove ship_shape
-      remove bullet_shape
+      small_explosion bullet_shape
     end
     
     # @space.add_collision_func :bullet, :bullet do |bullet_shape1, bullet_shape2|
@@ -69,12 +88,14 @@ class GameWindow < Gosu::Window
     
     @space.add_collision_func :ship, :earth do |ship_shape, earth_shape| end
     @space.add_collision_func :ship, :nuke do |ship_shape, nuke_shape|
-      remove ship_shape
-      remove nuke_shape
+      small_explosion nuke_shape
     end
     @space.add_collision_func :bullet, :nuke do |bullet_shape, nuke_shape|
-      remove bullet_shape
+      small_explosion bullet_shape
       remove nuke_shape
+    end
+    @space.add_collision_func :bullet, :earth do |bullet_shape, earth_shape|
+      remove bullet_shape
     end
   end
   
@@ -113,7 +134,7 @@ class GameWindow < Gosu::Window
   #
   def add_player1
     @player1 = Player.new self
-    @player1.warp CP::Vec2.new(SCREEN_WIDTH-100, SCREEN_HEIGHT/2) # move to the center of the window
+    @player1.warp_to SCREEN_WIDTH - 100, SCREEN_HEIGHT / 2 # move to the center of the window
     # @player1.colorize 255, 0, 0
     
     @controls << Controls.new(self, @player1,
@@ -131,7 +152,7 @@ class GameWindow < Gosu::Window
   #
   def add_player2
     @player2 = Player.new self
-    @player2.warp CP::Vec2.new(100, SCREEN_HEIGHT/2) # move to the center of the window
+    @player2.warp_to 100, SCREEN_HEIGHT / 2 # move to the center of the window
     # @player2.colorize 0, 255, 0
     
     @controls << Controls.new(self, @player2,

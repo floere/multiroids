@@ -15,9 +15,9 @@ class Player < Moveable
     
     @bullet_loaded = true
     
-    @image = Gosu::Image.new window, "media/spaceship.png", false
+    @image = Gosu::Image::load_tiles window, "media/spaceship.png", 22, 22, false
     
-    @shape = CP::Shape::Circle.new CP::Body.new(10.0, 75.0), 11.0, CP::Vec2.new(0, 0)
+    @shape = CP::Shape::Circle.new CP::Body.new(1.0, 1.0), 11.0, CP::Vec2.new(0, 0)
     
     # up-/downgradeable
     # self.turn_speed     = 0.1
@@ -61,6 +61,7 @@ class Player < Moveable
   end
   
   def draw
-    @image.draw_rot self.position.x, self.position.y, ZOrder::Player, drawing_rotation
+    image = @image[Gosu::milliseconds / 100 % @image.size];
+    image.draw_rot self.position.x, self.position.y, ZOrder::Player, drawing_rotation
   end
 end

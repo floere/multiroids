@@ -1,8 +1,10 @@
 #
-class Bullet < Moveable
+class Bullet < ShortLived
   
   include EarthOriented
   include Shot
+  
+  self.lifetime = 3
   
   def initialize window
     super window
@@ -14,13 +16,7 @@ class Bullet < Moveable
                                    CP::Vec2.new(0.0, 0.0))
     @shape.collision_type = :bullet
     
-    self.lifetime = 3
-    self.velocity = 80
-  end
-  
-  def self.shoot_from shooter
-    bullet = new shooter.window
-    bullet.shoot_from shooter
+    self.velocity = 100
   end
   
   def validate_position

@@ -5,6 +5,7 @@ class NukeLauncher < Gun
     
     self.frequency = 0.3
     self.range = 500
+    self.muzzle_position_func { self.position }
     self.muzzle_velocity_func { |target| self.direction_from_earth }
   end
   

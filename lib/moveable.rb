@@ -8,10 +8,16 @@ class Moveable
     @window = window
   end
   
+  # Directly set the position of our Moveable using a vector.
+  #
+  def warp vector
+    @shape.body.p = vector
+  end
+  
   # Directly set the position of our Moveable.
   #
-  def warp vect
-    @shape.body.p = vect
+  def warp_to x, y
+    @shape.body.p = CP::Vec2.new(x, y)
   end
   
   # Directly set the position of our Moveable.
