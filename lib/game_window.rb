@@ -34,14 +34,22 @@ class GameWindow < Gosu::Window
   def setup_objects
     register Earth.new(self)
     
-    nuke = Nuke.new self
-    nuke.warp CP::Vec2.new(SCREEN_WIDTH, SCREEN_HEIGHT)
-    register nuke
-    
     city = City.new self
     city.warp CP::Vec2.new(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
     city.put_on_surface
     register city
+    
+    nuke_gun = Gun.new self
+    nuke_gun.warp CP::Vec2.new(100, 100)
+    nuke_gun.put_on_surface -5
+    nuke_gun.shoots Nuke
+    register nuke_gun
+    
+    bullet_gun = Gun.new self
+    bullet_gun.warp CP::Vec2.new(SCREEN_WIDTH-100, 100)
+    bullet_gun.put_on_surface -5
+    bullet_gun.shoots Bullet
+    register bullet_gun
     
     add_player1
     add_player2
@@ -211,8 +219,8 @@ class GameWindow < Gosu::Window
   end
   
   def draw_ui
-    @font.draw "P1 Score: #{@player1.score}", 10, SCREEN_HEIGHT-30, ZOrder::UI, 1.0, 1.0, 0xffff0000
-    @font.draw "P2 Score: #{@player2.score}", SCREEN_WIDTH-110, 10, ZOrder::UI, 1.0, 1.0, 0xff00ff00    
+    # @font.draw "P1 Score: #{@player1.score}", 10, SCREEN_HEIGHT-30, ZOrder::UI, 1.0, 1.0, 0xffff0000
+    # @font.draw "P2 Score: #{@player2.score}", SCREEN_WIDTH-110, 10, ZOrder::UI, 1.0, 1.0, 0xff00ff00
   end
   
   def draw

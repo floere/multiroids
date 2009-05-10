@@ -2,6 +2,7 @@
 class Bullet < Moveable
   
   include EarthOriented
+  include Shot
   
   def initialize window
     super window
@@ -21,17 +22,6 @@ class Bullet < Moveable
   
   def validate_position
     closer
-  end
-  
-  def shoot_from shooter
-    self.position = shooter.position - self.direction_to_earth.normalize * 100
-    self.speed = self.direction_to_earth.normalize * 40
-    self.rotation = shooter.rotation
-    @window.register self
-    Thread.new do
-      sleep 4 
-      @window.unregister self
-    end
   end
   
   def draw

@@ -3,6 +3,8 @@
 class Player < Moveable
   
   include EarthOriented
+  include Targetable
+  include Shooter
   
   attr_reader :score
   
@@ -32,6 +34,21 @@ class Player < Moveable
     self.rotation = Math::PI
     
     @shape.collision_type = :ship
+    
+    self.shoots Bullet
+  end
+  
+  def muzzle_position
+    self.position + self.direction_to_earth * 20
+  end
+  def muzzle_velocity
+    self.direction_to_earth
+  end
+  def muzzle_rotation
+    self.rotation
+  end
+  def shot_lifetime
+    4
   end
   
   def score!
@@ -44,15 +61,6 @@ class Player < Moveable
     @color.blue = blue
   end
   
-  # # Apply even more forward force.
-  # # See accelerate for more details.
-  # #
-  # def boost
-  #   sometimes :boost_enabled, 5 do
-  #     @shape.body.apply_force((rotation_vector * (@boost_acceleration / SUBSTEPS)), CP::Vec2.new(0.0, 0.0))
-  #   end
-  # end
-  
   # Apply reverse force
   # See accelerate for more details
   #
@@ -62,8 +70,8 @@ class Player < Moveable
   end
   
   def shoot
-    sometimes :bullet_loaded, 0.2 do
-      Bullet.shoot_from self
+    sometimes :bullet_loaded, 0.5 do
+      self.shot.shoot_from self
     end
   end
   

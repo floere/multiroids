@@ -5,6 +5,7 @@ class Nuke < Moveable
   include Targeting
   include Turnable
   include Accelerateable
+  include Shot
   
   attr_reader :score
   
