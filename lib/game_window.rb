@@ -31,32 +31,23 @@ class GameWindow < Gosu::Window
     @space.damping = 0.8
   end
   
+  def randomly_add type
+    thing = type.new self
+    thing.warp_to rand*SCREEN_WIDTH, SCREEN_HEIGHT - 150
+    thing.put_on_surface
+    register thing
+  end
+  
   def setup_objects
     register Earth.new(self)
     
-    city = City.new self
-    city.warp_to SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2
-    city.put_on_surface
-    register city
-    
-    launcher = NukeLauncher.new self
-    launcher.warp_to SCREEN_WIDTH - 100, 100
-    launcher.put_on_surface -5
-    launcher.shoots Nuke
-    register launcher
-    
-    gun = Gun.new self
-    gun.warp_to 100, 50
-    gun.put_on_surface -5
-    gun.shoots Bullet
-    register gun
-    
-    explosion = Puff.new self
-    explosion.warp_to 200, 200
-    register explosion
+    10.times { randomly_add City }
+    3.times { randomly_add NukeLauncher }
+    5.times { randomly_add Gun }
     
     add_player1
     add_player2
+    add_player3
   end
   
   def small_explosion shape
@@ -77,9 +68,6 @@ class GameWindow < Gosu::Window
     end
     
     @space.add_collision_func :city, :earth, &nil
-    @space.add_collision_func :ship, :bullet do |ship_shape, bullet_shape|
-      small_explosion bullet_shape
-    end
     
     # @space.add_collision_func :bullet, :bullet do |bullet_shape1, bullet_shape2|
     #   remove bullet_shape1
@@ -90,12 +78,23 @@ class GameWindow < Gosu::Window
     @space.add_collision_func :ship, :nuke do |ship_shape, nuke_shape|
       small_explosion nuke_shape
     end
+    
     @space.add_collision_func :bullet, :nuke do |bullet_shape, nuke_shape|
       small_explosion bullet_shape
       remove nuke_shape
     end
+    @space.add_collision_func :bullet, :ship do |bullet_shape, ship_shape|
+      small_explosion bullet_shape
+    end
+    @space.add_collision_func :bullet, :city do |bullet_shape, ship_shape|
+      small_explosion bullet_shape
+    end
     @space.add_collision_func :bullet, :earth do |bullet_shape, earth_shape|
       remove bullet_shape
+    end
+    
+    @space.add_collision_func :city, :explosion do |city_shape, explosion_shape|
+      remove city_shape
     end
   end
   
@@ -134,15 +133,15 @@ class GameWindow < Gosu::Window
   #
   def add_player1
     @player1 = Player.new self
-    @player1.warp_to SCREEN_WIDTH - 100, SCREEN_HEIGHT / 2 # move to the center of the window
+    @player1.warp_to 30, 50 # move to the center of the window
     # @player1.colorize 255, 0, 0
     
     @controls << Controls.new(self, @player1,
-      Gosu::Button::KbLeft =>       :left,
-      Gosu::Button::KbRight =>      :right,
-      Gosu::Button::KbUp =>         :away,
-      Gosu::Button::KbDown =>       :closer,
-      Gosu::Button::KbSpace =>      :shoot
+      Gosu::Button::KbA =>           :left,
+      Gosu::Button::KbD =>           :right,
+      Gosu::Button::KbW =>           :away,
+      Gosu::Button::KbS =>           :closer,
+      Gosu::Button::KbLeftShift =>   :shoot
     )
     
     register @player1
@@ -152,18 +151,36 @@ class GameWindow < Gosu::Window
   #
   def add_player2
     @player2 = Player.new self
-    @player2.warp_to 100, SCREEN_HEIGHT / 2 # move to the center of the window
+    @player2.warp_to SCREEN_WIDTH/2, 50
     # @player2.colorize 0, 255, 0
     
     @controls << Controls.new(self, @player2,
-      Gosu::Button::KbA =>           :left,
-      Gosu::Button::KbD =>           :right,
-      Gosu::Button::KbW =>           :away,
-      Gosu::Button::KbS =>           :closer,
-      Gosu::Button::KbLeftShift =>   :shoot
+      Gosu::Button::KbH =>     :left,
+      Gosu::Button::KbK =>     :right,
+      Gosu::Button::KbU =>     :away,
+      Gosu::Button::KbJ =>     :closer,
+      Gosu::Button::KbSpace => :shoot
     )
     
     register @player2
+  end
+  
+  # Adds the second player.
+  #
+  def add_player3
+    @player3 = Player.new self
+    @player3.warp_to SCREEN_WIDTH - 30, 50 # move to the center of the window
+    # @player2.colorize 0, 255, 0
+    
+    @controls << Controls.new(self, @player3,
+      Gosu::Button::KbLeft =>       :left,
+      Gosu::Button::KbRight =>      :right,
+      Gosu::Button::KbUp =>         :away,
+      Gosu::Button::KbDown =>       :closer,
+      Gosu::Button::KbRightAlt =>   :shoot
+    )
+    
+    register @player3
   end
   
   def remove_collided
@@ -195,6 +212,7 @@ class GameWindow < Gosu::Window
     #
     @player1.shape.body.reset_forces
     @player2.shape.body.reset_forces
+    @player3.shape.body.reset_forces
   end
   
   # Checks whether
@@ -211,7 +229,7 @@ class GameWindow < Gosu::Window
   
   def targeting
     @moveables.select { |m| m.respond_to? :target }.each do |moveable|
-      moveable.target @player1, @player2
+      moveable.target @player1, @player2, @player3
     end
   end
   
@@ -239,8 +257,9 @@ class GameWindow < Gosu::Window
   end
   
   def draw_ui
-    # @font.draw "P1 Score: #{@player1.score}", 10, SCREEN_HEIGHT-30, ZOrder::UI, 1.0, 1.0, 0xffff0000
-    # @font.draw "P2 Score: #{@player2.score}", SCREEN_WIDTH-110, 10, ZOrder::UI, 1.0, 1.0, 0xff00ff00
+    @font.draw "P1 Score: #{@player1.score}", 10, 10, ZOrder::UI, 1.0, 1.0, 0xffff0000
+    @font.draw "P2 Score: #{@player2.score}", SCREEN_WIDTH/2-50, 10, ZOrder::UI, 1.0, 1.0, 0xff00ff00
+    @font.draw "P3 Score: #{@player3.score}", SCREEN_WIDTH-110, 10, ZOrder::UI, 1.0, 1.0, 0xff0000ff
   end
   
   def draw

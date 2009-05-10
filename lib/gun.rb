@@ -20,11 +20,11 @@ class Gun < Moveable
     skill = 0.05
     
     self.shoots Bullet
-    self.muzzle_position_func { self.position }
+    self.muzzle_position_func { self.position + self.direction_from_earth*10 }
     self.muzzle_velocity_func { |target| (target.position - self.muzzle_position[] + self.random_vector(1/skill)).normalize }
     self.muzzle_rotation_func { self.rotation }
-    self.range = 360
-    self.frequency = 3
+    self.range = 300
+    self.frequency = 1.5
   end
   
   def random_vector strength

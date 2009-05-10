@@ -16,11 +16,13 @@ class Bullet < ShortLived
                                    CP::Vec2.new(0.0, 0.0))
     @shape.collision_type = :bullet
     
+    self.friction = 0.1
     self.velocity = 100
+    self.lifetime = 2
   end
   
   def validate_position
-    closer
+    closer * 0.05
   end
   
   def draw

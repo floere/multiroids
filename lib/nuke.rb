@@ -24,7 +24,7 @@ class Nuke < Moveable
     
     # up-/downgradeable
     self.turn_speed     = 0.5
-    self.acceleration   = 0.05
+    self.acceleration   = 0.5
     
     self.friction       = 50.0
     
