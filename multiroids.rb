@@ -22,6 +22,8 @@ SUBSTEPS = 10
 
 require 'lib/numeric'
 require 'lib/zorder'
+
+require 'lib/target_acquisition'
 require 'lib/moveable'
 require 'lib/player'
 require 'lib/asteroid'

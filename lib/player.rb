@@ -22,11 +22,11 @@ class Player < Moveable
     @image = Gosu::Image.new window, "media/spaceship.png", false
     
     # up-/downgradeable
-    @rotation           = 100.0
+    @rotation           = 0.1
     @acceleration       = 800.0
     @boost_acceleration = 100_000.0
     @deceleration       = 200.0
-    @max_speed          = 200.0
+    @top_speed          = 200.0
     
     # Keep in mind that down the screen is positive y, which means that PI/2 radians,
     # which you might consider the top in the traditional Trig unit circle sense is actually
@@ -51,7 +51,7 @@ class Player < Moveable
   # even if the number of steps per update are adjusted
   #
   def turn_left
-    @shape.body.t -= @rotation / SUBSTEPS
+    self.rotation = self.rotation - @rotation / SUBSTEPS
   end
   
   # Apply positive Torque; Chipmunk will do the rest
@@ -59,7 +59,7 @@ class Player < Moveable
   # even if the number of steps per update are adjusted
   #
   def turn_right
-    @shape.body.t += @rotation / SUBSTEPS
+    self.rotation = self.rotation + @rotation / SUBSTEPS
   end
   
   # Apply forward force; Chipmunk will do the rest
@@ -70,8 +70,8 @@ class Player < Moveable
   # and with a magnitude representing the force we want to apply.
   #
   def accelerate
-    acceleration = [@acceleration, (@max_speed-self.current_speed)].min
-    @shape.body.apply_force((rotation_vector * (acceleration/SUBSTEPS)), CP::Vec2.new(0.0, 0.0))
+    acceleration = [@acceleration, (@top_speed-self.current_speed)].min
+    @shape.body.apply_force((rotation_vector * (acceleration / SUBSTEPS)), CP::Vec2.new(0.0, 0.0))
   end
   
   # Apply even more forward force.
@@ -79,7 +79,7 @@ class Player < Moveable
   #
   def boost
     sometimes :boost_enabled, 5 do
-      @shape.body.apply_force((rotation_vector * (@boost_acceleration/SUBSTEPS)), CP::Vec2.new(0.0, 0.0))
+      @shape.body.apply_force((rotation_vector * (@boost_acceleration / SUBSTEPS)), CP::Vec2.new(0.0, 0.0))
     end
   end
   
@@ -87,7 +87,8 @@ class Player < Moveable
   # See accelerate for more details
   #
   def reverse
-    @shape.body.apply_force(-(rotation_vector * (@deceleration / SUBSTEPS)), CP::Vec2.new(0.0, 0.0))
+    deceleration = [@deceleration, (@top_speed-self.current_speed)].min
+    @shape.body.apply_force(-(rotation_vector * (deceleration / SUBSTEPS)), CP::Vec2.new(0.0, 0.0))
   end
   
   def shoot

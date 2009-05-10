@@ -36,6 +36,10 @@ class GameWindow < Gosu::Window
     add_player2
     
     register Earth.new(self)
+    
+    nuke = Nuke.new self
+    nuke.warp CP::Vec2.new(SCREEN_WIDTH - 50, SCREEN_HEIGHT - 50)
+    register nuke
   end
   
   def setup_collisions
@@ -105,19 +109,19 @@ class GameWindow < Gosu::Window
   #
   def add_player2
     @player2 = Player.new self
-    @player2.warp CP::Vec2.new(SCREEN_WIDTH-100, 20) # move to the center of the window
-    @player2.colorize 0, 255, 0
-    
-    @controls << Controls.new(self, @player2,
-      Gosu::Button::KbA =>           :turn_left,
-      Gosu::Button::KbD =>           :turn_right,
-      Gosu::Button::KbW =>           :accelerate,
-      Gosu::Button::KbLeftControl => :boost,
-      Gosu::Button::KbS =>           :reverse,
-      Gosu::Button::KbLeftShift =>   :shoot
-    )
-    
-    register @player2
+    # @player2.warp CP::Vec2.new(SCREEN_WIDTH-100, 20) # move to the center of the window
+    # @player2.colorize 0, 255, 0
+    # 
+    # @controls << Controls.new(self, @player2,
+    #   Gosu::Button::KbA =>           :turn_left,
+    #   Gosu::Button::KbD =>           :turn_right,
+    #   Gosu::Button::KbW =>           :accelerate,
+    #   Gosu::Button::KbLeftControl => :boost,
+    #   Gosu::Button::KbS =>           :reverse,
+    #   Gosu::Button::KbLeftShift =>   :shoot
+    # )
+    # 
+    # register @player2
   end
   
   def remove_collided
