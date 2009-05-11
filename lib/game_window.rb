@@ -79,6 +79,8 @@ class GameWindow < Gosu::Window
       small_explosion nuke_shape
     end
     
+    @space.add_collision_func :gun, :nuke, &nil
+    
     @space.add_collision_func :bullet, :nuke do |bullet_shape, nuke_shape|
       small_explosion bullet_shape
       remove nuke_shape
