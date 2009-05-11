@@ -11,8 +11,8 @@ require 'activesupport'
 require 'gosu'
 require 'chipmunk' # A physics framework.
 
-SCREEN_WIDTH = 640
-SCREEN_HEIGHT = 640
+SCREEN_WIDTH = 700
+SCREEN_HEIGHT = 700
 
 # The number of steps to process every Gosu update
 # The Player ship can get going so fast as to "move through" a
