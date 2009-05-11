@@ -40,7 +40,7 @@ class Player < Moveable
     self.muzzle_position_func { self.position + self.direction_to_earth * 20 }
     self.muzzle_velocity_func { |target| self.direction_to_earth }
     self.muzzle_rotation_func { self.rotation }
-    self.frequency = 2
+    self.frequency = 20
     
     self.lives = 30
   end

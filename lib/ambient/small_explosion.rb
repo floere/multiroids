@@ -3,7 +3,7 @@ class SmallExplosion < ShortLived
   include Hurting
   
   def initialize window
-    self.lifetime = 0.5
+    self.lifetime = 15
     
     super window
     

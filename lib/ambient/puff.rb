@@ -1,7 +1,7 @@
 class Puff < ShortLived
   
   def initialize window
-    self.lifetime = 1
+    self.lifetime = 40
     
     super window
     

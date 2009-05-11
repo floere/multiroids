@@ -13,7 +13,7 @@ class Nuke < ShortLived
   attr_reader :score
   
   def initialize window
-    self.lifetime = 20
+    self.lifetime = 800
     
     super window
     
