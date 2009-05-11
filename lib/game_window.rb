@@ -263,6 +263,7 @@ class GameWindow < Gosu::Window
       handle_input
       step_once
     end
+    @threading.step
   end
   
   def draw_background

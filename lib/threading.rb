@@ -8,7 +8,7 @@ class Threading
     new_threads = {}
     @threads.each_pair do |time, codes|
       time = time - 1
-      if time == 0
+      if time <= 0
         execute codes
       else
         new_threads[time] = codes
