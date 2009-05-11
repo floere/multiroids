@@ -7,8 +7,7 @@ module Shot
     self.rotation = shooter.muzzle_rotation[]
     self.originator = shooter
     @window.register self
-    threaded do
-      sleep lifetime
+    threaded lifetime do
       @window.unregister self
     end
     self

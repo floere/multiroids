@@ -24,12 +24,17 @@ class GameWindow < Gosu::Window
     @controls = []
     @remove_shapes = []
     @players = []
+    @threading = Threading.new
     @dt = 1.0 / 60.0
   end
   
   def setup_space
     @space = CP::Space.new
     @space.damping = 0.8
+  end
+  
+  def threaded time, code
+    @threading.add time, code
   end
   
   def randomly_add type

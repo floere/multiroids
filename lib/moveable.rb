@@ -15,8 +15,9 @@ class Moveable
     true
   end
   
-  def threaded &block
-    @running_threads << Thread.new(&block)
+  def threaded time, &code
+    # @running_threads << Thread.new(&block)
+    window.threaded time, code
   end
   
   # Directly set the position of our Moveable using a vector.
@@ -73,16 +74,15 @@ class Moveable
     @shape.u
   end
   
-  # Some things you can only do every x seconds.
+  # Some things you can only do every x units.
   #
-  def sometimes variable, frequency = 1, &block
+  def sometimes variable, units = 1, &block
     name = :"@#{variable}"
     return if instance_variable_get(name)
     instance_variable_set name, true
     result = block.call
-    threaded do
-      sleep(1.0 / frequency)
-      instance_variable_set name, false
+    threaded units do
+      self.instance_variable_set name, false
     end
     result
   end

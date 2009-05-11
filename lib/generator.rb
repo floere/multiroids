@@ -17,12 +17,8 @@ module Generator
   module InstanceMethods
     
     def start_generating
-      # TODO join this thread on generator death
-      threaded do
-        loop do
-          sleep 1
-          generate
-        end
+      threaded 1 do
+        generate
       end
     end
     

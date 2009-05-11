@@ -22,6 +22,7 @@ SUBSTEPS = 10
 
 require 'lib/numeric'
 require 'lib/zorder'
+require 'lib/threading'
 
 require 'lib/targeting'
 require 'lib/moveable'

@@ -5,8 +5,7 @@ class ShortLived < Moveable
   def initialize window
     super window
     
-    threaded do
-      sleep self.lifetime
+    threaded self.lifetime do
       self.destroy
     end
   end
