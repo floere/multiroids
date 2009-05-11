@@ -18,7 +18,7 @@ class Player < Moveable
     
     @image = Gosu::Image::load_tiles window, "media/spaceship.png", 22, 22, false
     
-    @shape = CP::Shape::Circle.new CP::Body.new(0.1, 0.1), 11.0, CP::Vec2.new(0, 0)
+    @shape = CP::Shape::Circle.new CP::Body.new(0.1, 0.1), 5.0, CP::Vec2.new(0, 0)
     
     # up-/downgradeable
     # self.turn_speed     = 0.1
