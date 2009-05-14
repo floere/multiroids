@@ -17,7 +17,7 @@ class Bullet < ShortLived
     @shape.collision_type = :bullet
     
     self.friction = 0.1
-    self.velocity = 50
+    self.velocity = 50 + rand(30)
   end
   
   def validate_position

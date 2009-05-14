@@ -16,7 +16,7 @@ class Gun < Moveable
     @shape = CP::Shape::Circle.new CP::Body.new(1000.0, 75.0), 11.0, CP::Vec2.new(0, 0)
     @shape.collision_type = :gun
     
-    skill = rand * 0.5
+    skill = rand * 0.1
     
     self.shoots Bullet
     self.muzzle_position_func { self.position + self.direction_from_earth*10 }
