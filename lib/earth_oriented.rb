@@ -13,10 +13,6 @@ module EarthOriented
     put_on_surface
   end
   
-  def put_anywhere
-    
-  end
-  
   def put_on_surface difference = 0.0
     self.position = EARTH_POSITION + (direction_from_earth * (EARTH_RADIUS + difference))
   end

@@ -53,12 +53,12 @@ class Nuke < ShortLived
     # puts rotation
     
     case angle
-    when 0..Math::PI : turn_left
-    when Math::PI..(2*Math::PI) : turn_right
+    when 0..Math::PI then turn_left
+    when Math::PI..(2*Math::PI) then turn_right
     end
     
     case angle + Math::PI/2
-    when 0..Math::PI : accelerate
+    when 0..Math::PI then accelerate
     end
   end
   

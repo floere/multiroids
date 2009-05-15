@@ -21,11 +21,11 @@ class Ray < ShortLived
   end
   
   def validate_position
-    closer * 0.05
+    closer * 0.01
   end
   
   def draw
-    @image.draw_rot(position.x, position.y, ZOrder::Player, drawing_rotation)
+    @image.draw_rot position.x, position.y, ZOrder::Player, drawing_rotation
   end
   
 end
