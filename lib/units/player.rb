@@ -2,7 +2,6 @@
 #
 class Player < Moveable
   
-  include EarthOriented
   include Targetable
   include Shooter
   include Lives
@@ -16,7 +15,7 @@ class Player < Moveable
     
     @bullet_loaded = true
     
-    @image = Gosu::Image::load_tiles window, "media/spaceship.png", 22, 22, false
+    @image = Gosu::Image.new window, "media/spaceship.png", false
     
     @shape = CP::Shape::Circle.new CP::Body.new(0.1, 0.1), 5.0, CP::Vec2.new(0, 0)
     
@@ -32,11 +31,11 @@ class Player < Moveable
     # Keep in mind that down the screen is positive y, which means that PI/2 radians,
     # which you might consider the top in the traditional Trig unit circle sense is actually
     # the bottom; thus 3PI/2 is the top
-    self.rotation = Math::PI
+    self.rotation = 0
     
     @shape.collision_type = :ship
     
-    self.shoots Ray
+    self.shoots Bullet
     self.muzzle_position_func { self.position + self.direction_to_earth * 20 }
     self.muzzle_velocity_func { |target| self.direction_to_earth }
     self.muzzle_rotation_func { self.rotation }
@@ -58,7 +57,6 @@ class Player < Moveable
   # Wrap to the other side of the screen when we fly off the edge.
   #
   def validate_position
-    align_to_earth
     if position.x > SCREEN_WIDTH || position.x < 0
       @shape.body.v.x = -@shape.body.v.x
     end
@@ -68,7 +66,6 @@ class Player < Moveable
   end
   
   def draw
-    image = @image[Gosu::milliseconds / 100 % @image.size];
-    image.draw_rot self.position.x, self.position.y, ZOrder::Player, drawing_rotation, 0.5, 0.5, 0.5, 0.5
+    @image.draw_rot position.x, position.y, ZOrder::Player, drawing_rotation, 1.0, 1.0, 1.0, 1.0
   end
 end

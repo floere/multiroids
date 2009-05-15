@@ -47,11 +47,11 @@ class GameWindow < Gosu::Window
   end
   
   def setup_objects
-    register Earth.new(self)
-    
-    7.times { randomly_add Cow }
-    2.times { randomly_add NukeLauncher }
-    3.times { randomly_add Gun }
+    # register Earth.new(self)
+    # 
+    # 7.times { randomly_add Cow }
+    # 2.times { randomly_add NukeLauncher }
+    # 3.times { randomly_add Gun }
     
     add_player1
     add_player2
@@ -186,15 +186,14 @@ class GameWindow < Gosu::Window
   # Adds the third player.
   #
   def add_player3
-    @player3 = Player.new self
-    @player3.warp_to SCREEN_WIDTH - 30, 50 # move to the center of the window
-    # @player2.colorize 0, 255, 0
+    @player3 = FirstMate.new self
+    @player3.warp_to 30, 100 # move to the center of the window
     
     @controls << Controls.new(self, @player3,
       Gosu::Button::KbLeft =>       :left,
       Gosu::Button::KbRight =>      :right,
-      Gosu::Button::KbUp =>         :away,
-      Gosu::Button::KbDown =>       :closer,
+      Gosu::Button::KbUp =>         :up,
+      Gosu::Button::KbDown =>       :down,
       Gosu::Button::KbRightAlt =>   :shoot,
       Gosu::Button::Kb0 =>          :revive
     )
