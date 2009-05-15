@@ -1,24 +1,6 @@
 # A moveable has a shape, speed etc.
 #
-class Moveable
-  
-  attr_reader :window, :shape
-  
-  def initialize window
-    @running_threads = []
-    @window = window
-  end
-  
-  def destroy
-    @window.unregister self
-    @running_threads.select { |thread| thread.status == false }.each(&:join)
-    true
-  end
-  
-  def threaded time, &code
-    # @running_threads << Thread.new(&block)
-    window.threaded time, code
-  end
+class Moveable < Thing
   
   # Directly set the position of our Moveable using a vector.
   #
@@ -74,19 +56,6 @@ class Moveable
     @shape.u
   end
   
-  # Some things you can only do every x units.
-  #
-  def sometimes variable, units = 1, &block
-    name = :"@#{variable}"
-    return if instance_variable_get(name)
-    instance_variable_set name, true
-    result = block.call
-    threaded units do
-      self.instance_variable_set name, false
-    end
-    result
-  end
-  
   def rotation_vector
     @shape.body.a.radians_to_vec2
   end
@@ -108,11 +77,6 @@ class Moveable
   #
   def validate_position
     
-  end
-  
-  def add_to space
-    space.add_body @shape.body
-    space.add_shape @shape
   end
   
   def velocity

@@ -1,8 +1,8 @@
 #
 class Bullet < ShortLived
   
-  include EarthOriented
-  include Shot
+  it_is   EarthOriented
+  it_is_a Shot
   
   def initialize window
     self.lifetime = 50

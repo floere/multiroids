@@ -1,4 +1,14 @@
-class Threading
+# "Threading"
+# A hash with time => [block, block, block ...]
+#
+# {
+#   100 => [{bla}, {blu}, {bli}],
+#   1   => [{eek}]
+# }
+#
+# When calling threading.step, eek will be executed, the others will be one step closer to zero, 99.
+#
+class Scheduling
   
   def initialize
     @threads = {}

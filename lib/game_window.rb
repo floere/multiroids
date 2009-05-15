@@ -15,7 +15,7 @@ class GameWindow < Gosu::Window
   end
   
   def init
-    self.caption = "MULTIROOOOIDS!"
+    self.caption = "Aliens attaaaaack!"
     @background_image = Gosu::Image.new self, 'media/Space.png', true
     @beep = Gosu::Sample.new self, 'media/beep.wav'
     @score = 0
@@ -24,7 +24,7 @@ class GameWindow < Gosu::Window
     @controls = []
     @remove_shapes = []
     @players = []
-    @threading = Threading.new
+    @scheduling = Scheduling.new
     @dt = 1.0 / 60.0
   end
   
@@ -34,7 +34,7 @@ class GameWindow < Gosu::Window
   end
   
   def threaded time, code
-    @threading.add time, code
+    @scheduling.add time, code
   end
   
   def randomly_add type
@@ -265,7 +265,7 @@ class GameWindow < Gosu::Window
       handle_input
       step_once
     end
-    @threading.step
+    @scheduling.step
   end
   
   def draw_background
