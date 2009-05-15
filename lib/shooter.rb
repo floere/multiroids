@@ -27,6 +27,7 @@ module Shooter
     return unless shoot? target
     sometimes :loading, self.frequency do
       bullet = self.shot.shoot_from self
+      bullet.rotation = self.muzzle_rotation[target]
       bullet.speed = self.muzzle_velocity[target] * bullet.velocity
     end
   end

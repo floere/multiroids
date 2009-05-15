@@ -5,6 +5,7 @@ class Player < Moveable
   include Targetable
   include Shooter
   include Lives
+  include MotherShip # just adds the ability
   
   attr_accessor :score
   

@@ -1,6 +1,7 @@
 class Admiral < Player
   
   include HorizonOriented
+  acts_as_mothership
   
   def initialize window
     super window
@@ -21,7 +22,13 @@ class Admiral < Player
     # self.frequency = 1000
     
     self.rotation = 1.5*Math::PI
-    self.acceleration = 0.05
+    self.acceleration = 0.01
+    
+    self.add_child Gun.new(window),   40, -140
+    self.add_child Gun.new(window),  -40, -140
+    self.add_child Gun.new(window), -150,    0
+    self.add_child Gun.new(window),  150,    0
+    self.add_child Gun.new(window),    0,  140
   end
   
 end

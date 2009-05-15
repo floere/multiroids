@@ -37,6 +37,8 @@ require 'lib/shot'
 require 'lib/hurting'
 require 'lib/generator'
 require 'lib/lives'
+require 'lib/mother_ship'
+require 'lib/child'
 
 require 'lib/short_lived'
 require 'lib/controls'

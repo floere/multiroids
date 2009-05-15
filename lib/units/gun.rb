@@ -13,17 +13,17 @@ class Gun < Moveable
     
     @image = Gosu::Image.new window, "media/gun.png", false
     
-    @shape = CP::Shape::Circle.new CP::Body.new(1000.0, 75.0), 11.0, CP::Vec2.new(0, 0)
+    @shape = CP::Shape::Circle.new CP::Body.new(1000.0, 75.0), 3.0, CP::Vec2.new(0, 0)
     @shape.collision_type = :gun
     
     skill = rand * 0.1
     
     self.shoots Bullet
-    self.muzzle_position_func { self.position + self.direction_from_earth*10 }
+    self.muzzle_position_func { self.position }
     self.muzzle_velocity_func { |target| (target.position - self.muzzle_position[] + self.random_vector(1/skill)).normalize }
-    self.muzzle_rotation_func { self.rotation }
-    self.range = 300
-    self.frequency = 30
+    self.muzzle_rotation_func { |target| (target.position - self.muzzle_position[]).to_angle }
+    self.range = 600
+    self.frequency = 10
   end
   
   def random_vector strength

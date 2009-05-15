@@ -4,7 +4,6 @@ module Shot
   
   def shoot_from shooter
     self.position = shooter.muzzle_position[]
-    self.rotation = shooter.muzzle_rotation[]
     self.originator = shooter
     @window.register self
     threaded lifetime do

@@ -15,7 +15,7 @@ class Bullet < ShortLived
                                    CP::Vec2.new(0.0, 0.0))
     @shape.collision_type = :bullet
     
-    self.friction = 0.00
+    self.friction = 0.0001
     self.velocity = 70 + rand(30)
   end
   

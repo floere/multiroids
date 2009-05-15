@@ -15,7 +15,7 @@ class Captain < Player
     self.frequency = 20
     
     self.rotation = 1.5*Math::PI
-    self.acceleration = 0.10
+    self.acceleration = 0.05
   end
   
 end

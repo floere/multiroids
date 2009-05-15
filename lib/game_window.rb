@@ -66,26 +66,17 @@ class GameWindow < Gosu::Window
   end
   
   def setup_collisions
-    @space.add_collision_func :ship, :ambient do |ship_shape, ambient_shape|
-      # just push it away
-    end
-    @space.add_collision_func :nuke, :ambient, &nil
-    @space.add_collision_func :bullet, :ambient, &nil
-    
-    @space.add_collision_func :city, :earth, &nil
-    
-    @space.add_collision_func :ship, :earth do |ship_shape, earth_shape| end
+    @space.add_collision_func :ship, :bullet, &nil
+    @space.add_collision_func :ship, :gun, &nil
     @space.add_collision_func :ship, :nuke do |ship_shape, nuke_shape|
       small_explosion nuke_shape
     end
+    @space.add_collision_func :ship, :ambient do |ship_shape, ambient_shape|
+      # just push it away
+    end
     
-    @space.add_collision_func :ray, :cow do |_, cow_shape|
-      @moveables.each { |cow| cow.shape == cow_shape && cow.away(10) }
-    end
-    @space.add_collision_func :ship, :cow do |ship_shape, cow_shape|
-      @moveables.each { |ship| ship.shape == ship_shape && ship.score += 10 }
-      remove cow_shape
-    end
+    @space.add_collision_func :nuke, :ambient, &nil
+    @space.add_collision_func :bullet, :ambient, &nil
     
     @space.add_collision_func :gun, :nuke, &nil
     
@@ -93,19 +84,7 @@ class GameWindow < Gosu::Window
       small_explosion bullet_shape
       remove nuke_shape
     end
-    @space.add_collision_func :bullet, :ship do |bullet_shape, ship_shape|
-      small_explosion bullet_shape
-    end
-    @space.add_collision_func :bullet, :city do |bullet_shape, ship_shape|
-      small_explosion bullet_shape
-    end
-    @space.add_collision_func :bullet, :earth do |bullet_shape, earth_shape|
-      remove bullet_shape
-    end
     
-    @space.add_collision_func :city, :explosion do |city_shape, explosion_shape|
-      @moveables.each { |city| city.shape == city_shape && city.hit! }
-    end
     @space.add_collision_func :ship, :explosion do |ship_shape, explosion_shape|
       @players.each { |player| player.shape == ship_shape && player.hit! }
     end
@@ -145,7 +124,7 @@ class GameWindow < Gosu::Window
   #
   def add_player1
     @player1 = Admiral.new self
-    @player1.warp_to 150, 400 # move to the center of the window
+    @player1.warp_to 150, 320 # move to the center of the window
     
     @controls << Controls.new(self, @player1,
       Gosu::Button::KbA =>           :left,
@@ -248,7 +227,7 @@ class GameWindow < Gosu::Window
   
   def targeting
     @moveables.select { |m| m.respond_to? :target }.each do |moveable|
-      moveable.target @player1, @player2, @player3
+      moveable.target @player2, @player3
     end
   end
   
