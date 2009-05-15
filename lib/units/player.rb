@@ -7,7 +7,7 @@ class Player < Moveable
   include Shooter
   include Lives
   
-  attr_reader :score
+  attr_accessor :score
   
   def initialize window
     super window
@@ -36,7 +36,7 @@ class Player < Moveable
     
     @shape.collision_type = :ship
     
-    self.shoots Bullet
+    self.shoots Ray
     self.muzzle_position_func { self.position + self.direction_to_earth * 20 }
     self.muzzle_velocity_func { |target| self.direction_to_earth }
     self.muzzle_rotation_func { self.rotation }

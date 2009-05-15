@@ -49,7 +49,7 @@ class GameWindow < Gosu::Window
   def setup_objects
     register Earth.new(self)
     
-    7.times { randomly_add City }
+    7.times { randomly_add Cow }
     2.times { randomly_add NukeLauncher }
     3.times { randomly_add Gun }
     
@@ -77,6 +77,14 @@ class GameWindow < Gosu::Window
     @space.add_collision_func :ship, :earth do |ship_shape, earth_shape| end
     @space.add_collision_func :ship, :nuke do |ship_shape, nuke_shape|
       small_explosion nuke_shape
+    end
+    
+    @space.add_collision_func :ray, :cow do |_, cow_shape|
+      @moveables.each { |cow| cow.shape == cow_shape && cow.away(10) }
+    end
+    @space.add_collision_func :ship, :cow do |ship_shape, cow_shape|
+      @moveables.each { |ship| ship.shape == ship_shape && ship.score += 10 }
+      remove cow_shape
     end
     
     @space.add_collision_func :gun, :nuke, &nil

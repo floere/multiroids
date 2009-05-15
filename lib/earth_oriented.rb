@@ -25,24 +25,24 @@ module EarthOriented
     self.rotation = direction_from_earth.to_angle
   end
   
-  def left
+  def left factor = 0.15
     direction = direction_from_earth
     direction.x, direction.y = direction.y, -direction.x
-    self.position += direction * 0.15
+    self.position += direction * factor
   end
   
-  def right
+  def right factor = 0.15
     direction = direction_from_earth
     direction.x, direction.y = -direction.y, direction.x
-    self.position += direction * 0.15
+    self.position += direction * factor
   end
   
-  def away
-    self.position += direction_from_earth * 0.15
+  def away factor = 0.15
+    self.position += direction_from_earth * factor
   end
   
-  def closer
-    self.position += direction_to_earth * 0.15
+  def closer factor = 0.15
+    self.position += direction_to_earth * factor
   end
   
 end
