@@ -144,15 +144,14 @@ class GameWindow < Gosu::Window
   # Adds the first player.
   #
   def add_player1
-    @player1 = Player.new self
-    @player1.warp_to 30, 50 # move to the center of the window
-    # @player1.colorize 255, 0, 0
+    @player1 = Admiral.new self
+    @player1.warp_to 150, 400 # move to the center of the window
     
     @controls << Controls.new(self, @player1,
       Gosu::Button::KbA =>           :left,
       Gosu::Button::KbD =>           :right,
-      Gosu::Button::KbW =>           :away,
-      Gosu::Button::KbS =>           :closer,
+      Gosu::Button::KbW =>           :up,
+      Gosu::Button::KbS =>           :down,
       Gosu::Button::KbLeftShift =>   :shoot,
       Gosu::Button::Kb1 =>           :revive
     )
@@ -165,15 +164,14 @@ class GameWindow < Gosu::Window
   # Adds the second player.
   #
   def add_player2
-    @player2 = Player.new self
-    @player2.warp_to SCREEN_WIDTH/2, 50
-    # @player2.colorize 0, 255, 0
+    @player2 = Captain.new self
+    @player2.warp_to 100, SCREEN_HEIGHT - 150
     
     @controls << Controls.new(self, @player2,
       Gosu::Button::KbH =>     :left,
       Gosu::Button::KbK =>     :right,
-      Gosu::Button::KbU =>     :away,
-      Gosu::Button::KbJ =>     :closer,
+      Gosu::Button::KbU =>     :up,
+      Gosu::Button::KbJ =>     :down,
       Gosu::Button::KbSpace => :shoot,
       Gosu::Button::Kb7 =>     :revive
     )
@@ -187,7 +185,7 @@ class GameWindow < Gosu::Window
   #
   def add_player3
     @player3 = FirstMate.new self
-    @player3.warp_to 30, 100 # move to the center of the window
+    @player3.warp_to 50, 100 # move to the center of the window
     
     @controls << Controls.new(self, @player3,
       Gosu::Button::KbLeft =>       :left,

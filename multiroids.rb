@@ -11,7 +11,7 @@ require 'activesupport'
 require 'gosu'
 require 'chipmunk' # A physics framework.
 
-SCREEN_WIDTH = 1000
+SCREEN_WIDTH = 1200
 SCREEN_HEIGHT = 700
 
 # The number of steps to process every Gosu update
@@ -43,8 +43,12 @@ require 'lib/controls'
 
 require 'lib/ambient/puff'
 require 'lib/ambient/small_explosion'
+
 require 'lib/units/player'
 require 'lib/units/first_mate'
+require 'lib/units/captain'
+require 'lib/units/admiral'
+
 require 'lib/units/cow'
 require 'lib/units/gun'
 require 'lib/units/nuke_launcher'

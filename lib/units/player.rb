@@ -19,19 +19,11 @@ class Player < Moveable
     
     @shape = CP::Shape::Circle.new CP::Body.new(0.1, 0.1), 5.0, CP::Vec2.new(0, 0)
     
-    # up-/downgradeable
-    # self.turn_speed     = 0.1
-    # self.acceleration   = 150.0
-    # self.top_speed      = 200.0
-    
     self.friction       = 1.0
     
     @deceleration       = 300.0
     
-    # Keep in mind that down the screen is positive y, which means that PI/2 radians,
-    # which you might consider the top in the traditional Trig unit circle sense is actually
-    # the bottom; thus 3PI/2 is the top
-    self.rotation = 0
+    self.rotation = -Math::PI
     
     @shape.collision_type = :ship
     
@@ -66,6 +58,6 @@ class Player < Moveable
   end
   
   def draw
-    @image.draw_rot position.x, position.y, ZOrder::Player, drawing_rotation, 1.0, 1.0, 1.0, 1.0
+    @image.draw_rot position.x, position.y, ZOrder::Player, drawing_rotation
   end
 end

@@ -1,5 +1,12 @@
 module HorizonOriented
   
+  def acceleration= acceleration
+    @acceleration = acceleration
+  end
+  def acceleration
+    @acceleration || 0.15
+  end
+  
   def horizontal
     CP::Vec2.new(1,0)
   end
@@ -7,16 +14,16 @@ module HorizonOriented
     CP::Vec2.new(0,1)
   end
   
-  def left factor = 0.15
+  def left factor = acceleration
     self.speed -= horizontal * factor
   end
-  def right factor = 0.15
+  def right factor = acceleration
     self.speed += horizontal * factor
   end
-  def up factor = 0.15
+  def up factor = acceleration
     self.speed -= vertical * factor
   end
-  def down factor = 0.15
+  def down factor = acceleration
     self.speed += vertical * factor
   end
   
