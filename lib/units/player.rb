@@ -5,6 +5,7 @@ class Player < Moveable
   include Targetable
   include Shooter
   include Lives
+  include TopDownOriented
   include MotherShip # just adds the ability
   
   attr_accessor :score
@@ -13,17 +14,12 @@ class Player < Moveable
     super window
     
     @score = 0
-    
     @bullet_loaded = true
     
     @image = Gosu::Image.new window, "media/spaceship.png", false
-    
     @shape = CP::Shape::Circle.new CP::Body.new(0.1, 0.1), 5.0, CP::Vec2.new(0, 0)
     
-    self.friction       = 1.0
-    
-    @deceleration       = 300.0
-    
+    self.friction = 1.0
     self.rotation = -Math::PI
     
     @shape.collision_type = :ship
@@ -33,8 +29,6 @@ class Player < Moveable
     self.muzzle_velocity_func { |target| self.direction_to_earth }
     self.muzzle_rotation_func { self.rotation }
     self.frequency = 20
-    
-    self.lives = 30
   end
   
   def revive

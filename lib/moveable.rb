@@ -39,7 +39,7 @@ class Moveable < Thing
   # Directly set the rotation of our Moveable.
   #
   def rotation= rotation
-    @shape.body.a = rotation
+    @shape.body.a = rotation % (2*Math::PI)
   end
   def rotation
     @shape.body.a

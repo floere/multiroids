@@ -2,11 +2,18 @@ class Captain < Player
   
   include HorizonOriented
   
+  lives 300
+  
   def initialize window
     super window
     
     @image = Gosu::Image.new window, "media/captain.png", false
-    @shape = CP::Shape::Circle.new CP::Body.new(10, 10), 10.0, CP::Vec2.new(0, 0)
+    
+    body = CP::Body.new(10, 10)
+    shape_array = [CP::Vec2.new(0, 0), CP::Vec2.new(87, 0), CP::Vec2.new(87, 22), CP::Vec2.new(0, 22)]
+    @shape = CP::Shape::Poly.new body, shape_array, CP::Vec2.new(0, 0)
+    
+    @shape.collision_type = :ship
     
     self.shoots Bullet
     self.muzzle_position_func { self.position + horizontal * 40 }

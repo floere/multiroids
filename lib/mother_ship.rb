@@ -3,14 +3,31 @@
 module MotherShip
   
   def self.included target_class
-    target_class.extend ClassMethods
+    target_class.extend IncludeMethods
   end
   
-  module ClassMethods
+  module IncludeMethods
     
     def acts_as_mothership
       include InstanceMethods
       alias_method_chain :validate_position, :children
+      class_inheritable_accessor :prototype_children
+      extend ClassMethods
+      hook = lambda do
+        self.class.prototype_children.each do |type, x, y|
+          add_child type.new(window), x, y
+        end
+      end
+      InitializerHooks.register self, hook
+    end
+    
+  end
+  
+  module ClassMethods
+    
+    def with type, x, y
+      self.prototype_children ||= []
+      self.prototype_children << [type, x, y]
     end
     
   end
@@ -23,6 +40,7 @@ module MotherShip
       self.children ||= []
       child.extend Child
       window.register child
+      child.rotation = self.rotation
       child.relative_child_position = CP::Vec2.new(x, y)
       self.children << child
     end

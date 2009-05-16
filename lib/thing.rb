@@ -1,5 +1,7 @@
 class Thing
   
+  include InitializerHooks
+  
   attr_reader :window, :shape
   
   def initialize window

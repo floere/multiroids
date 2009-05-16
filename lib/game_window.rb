@@ -24,13 +24,15 @@ class GameWindow < Gosu::Window
     @controls = []
     @remove_shapes = []
     @players = []
+    @waves = Waves.new self
     @scheduling = Scheduling.new
+    @step = 0
     @dt = 1.0 / 60.0
   end
   
   def setup_space
     @space = CP::Space.new
-    @space.damping = 0.8
+    @space.damping = 1.0 # no damping
   end
   
   def threaded time, code
@@ -40,22 +42,24 @@ class GameWindow < Gosu::Window
   def randomly_add type
     thing = type.new self
     
-    thing.warp_to rand*SCREEN_WIDTH, rand*SCREEN_HEIGHT
+    thing.warp_to SCREEN_WIDTH, rand*SCREEN_HEIGHT
     
-    thing.put_on_surface
     register thing
   end
   
   def setup_objects
-    # register Earth.new(self)
-    # 
-    # 7.times { randomly_add Cow }
-    # 2.times { randomly_add NukeLauncher }
-    # 3.times { randomly_add Gun }
+    wave 10, Enemy,  100
+    wave 10, Enemy,  400
+    wave 10, Enemy,  700
+    wave 10, Enemy, 1000
     
-    add_player1
-    add_player2
-    add_player3
+    add_admiral
+    # add_captain
+    # add_first_mate
+  end
+  
+  def wave amount, type, time
+    @waves.add amount, type, time
   end
   
   def small_explosion shape
@@ -66,12 +70,24 @@ class GameWindow < Gosu::Window
   end
   
   def setup_collisions
+    @space.add_collision_func :bullet, :bullet, &nil
+    @space.add_collision_func :bullet, :gun, &nil
+    @space.add_collision_func :bullet, :enemy do |bullet_shape, enemy_shape|
+      small_explosion bullet_shape
+    end
+    @space.add_collision_func :enemy, :explosion do |enemy_shape, explosion_shape|
+      @moveables.each { |enemy| enemy.shape == enemy_shape && enemy.lives -= 100 }
+    end
+    
     @space.add_collision_func :ship, :bullet, &nil
     @space.add_collision_func :ship, :gun, &nil
     @space.add_collision_func :ship, :nuke do |ship_shape, nuke_shape|
       small_explosion nuke_shape
     end
-    @space.add_collision_func :ship, :ambient do |ship_shape, ambient_shape|
+    @space.add_collision_func :ship, :ambient do |_, _|
+      # just push it away
+    end
+    @space.add_collision_func :ship, :enemy do |_, _|
       # just push it away
     end
     
@@ -122,15 +138,15 @@ class GameWindow < Gosu::Window
   
   # Adds the first player.
   #
-  def add_player1
+  def add_admiral
     @player1 = Admiral.new self
     @player1.warp_to 150, 320 # move to the center of the window
     
     @controls << Controls.new(self, @player1,
       Gosu::Button::KbA =>           :left,
       Gosu::Button::KbD =>           :right,
-      Gosu::Button::KbW =>           :up,
-      Gosu::Button::KbS =>           :down,
+      Gosu::Button::KbW =>           :full_speed_ahead,
+      Gosu::Button::KbS =>           :reverse,
       Gosu::Button::KbLeftShift =>   :shoot,
       Gosu::Button::Kb1 =>           :revive
     )
@@ -142,7 +158,7 @@ class GameWindow < Gosu::Window
   
   # Adds the second player.
   #
-  def add_player2
+  def add_captain
     @player2 = Captain.new self
     @player2.warp_to 100, SCREEN_HEIGHT - 150
     
@@ -162,7 +178,7 @@ class GameWindow < Gosu::Window
   
   # Adds the third player.
   #
-  def add_player3
+  def add_first_mate
     @player3 = FirstMate.new self
     @player3.warp_to 50, 100 # move to the center of the window
     
@@ -226,8 +242,8 @@ class GameWindow < Gosu::Window
   end
   
   def targeting
-    @moveables.select { |m| m.respond_to? :target }.each do |moveable|
-      moveable.target @player2, @player3
+    @moveables.select { |m| m.respond_to? :target }.each do |gun|
+      gun.target *@moveables.select { |m| m.kind_of? Enemy }
     end
   end
   
@@ -239,6 +255,7 @@ class GameWindow < Gosu::Window
   #
   #
   def update
+    @step += 1
     # Step the physics environment SUBSTEPS times each update.
     #
     SUBSTEPS.times do
@@ -249,6 +266,7 @@ class GameWindow < Gosu::Window
       handle_input
       step_once
     end
+    @waves.check @step
     @scheduling.step
   end
   
@@ -262,8 +280,8 @@ class GameWindow < Gosu::Window
   
   def draw_ui
     @font.draw "P1 Score: #{@player1.score}", 10, 10, ZOrder::UI, 1.0, 1.0, 0xffff0000
-    @font.draw "P2 Score: #{@player2.score}", SCREEN_WIDTH/2-50, 10, ZOrder::UI, 1.0, 1.0, 0xff00ff00
-    @font.draw "P3 Score: #{@player3.score}", SCREEN_WIDTH-110, 10, ZOrder::UI, 1.0, 1.0, 0xff0000ff
+    # @font.draw "P2 Score: #{@player2.score}", SCREEN_WIDTH/2-50, 10, ZOrder::UI, 1.0, 1.0, 0xff00ff00
+    # @font.draw "P3 Score: #{@player3.score}", SCREEN_WIDTH-110, 10, ZOrder::UI, 1.0, 1.0, 0xff0000ff
   end
   
   def draw

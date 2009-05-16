@@ -4,7 +4,7 @@ class Bullet < ShortLived
   it_is_a Shot
   
   def initialize window
-    self.lifetime = 50
+    self.lifetime = 1000
     
     super window
     
@@ -16,7 +16,7 @@ class Bullet < ShortLived
     @shape.collision_type = :bullet
     
     self.friction = 0.0001
-    self.velocity = 70 + rand(30)
+    self.velocity = 5 + rand(1)
   end
   
   def validate_position

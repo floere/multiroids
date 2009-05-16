@@ -2,7 +2,6 @@
 #
 class Gun < Moveable
   
-  include EarthOriented
   include Targeting
   include Shooter
   
@@ -22,8 +21,8 @@ class Gun < Moveable
     self.muzzle_position_func { self.position }
     self.muzzle_velocity_func { |target| (target.position - self.muzzle_position[] + self.random_vector(1/skill)).normalize }
     self.muzzle_rotation_func { |target| (target.position - self.muzzle_position[]).to_angle }
-    self.range = 600
-    self.frequency = 10
+    self.range = 900
+    self.frequency = 300
   end
   
   def random_vector strength
@@ -31,13 +30,11 @@ class Gun < Moveable
   end
   
   def target *targets
+    return if targets.empty?
     target = acquire *targets
     shoot target
   end
   
-  def validate_position
-    align_to_earth
-  end
   
   def draw
     @image.draw_rot self.position.x, self.position.y, ZOrder::Player, drawing_rotation
