@@ -38,7 +38,7 @@ module TopDownOriented
       self.speed += rotation_vector * factor
     end
     def reverse factor = acceleration
-      self.speed -= rotation_vector * factor
+      self.speed -= rotation_vector * factor * 0.1
     end
     def left amount = turning
       self.rotation -= amount

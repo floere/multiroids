@@ -7,8 +7,8 @@ class Admiral < Player
   with Gun,  10, -140
   with Gun, 140,    0
   
-  acceleration 0.0001
-  turning      0.00001
+  acceleration 0.001
+  turning      0.0001
   lives        300
   
   def initialize window
