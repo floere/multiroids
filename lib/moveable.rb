@@ -23,6 +23,15 @@ class Moveable < Thing
     @shape.body.p
   end
   
+  # Directly set the torque of our Moveable.
+  #
+  def torque= torque
+    @shape.body.t = torque
+  end
+  def torque
+    @shape.body.t
+  end
+  
   # Directly set the speed of our Moveable.
   #
   def speed= v

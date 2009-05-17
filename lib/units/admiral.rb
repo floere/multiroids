@@ -8,14 +8,14 @@ class Admiral < Player
   with Gun, 140,    0
   
   acceleration 0.001
-  turning      0.0001
-  lives        300
+  turning      0.001
+  lives          300
   
   def initialize window
     super window
     
     @image = Gosu::Image.new window, "media/admiral.png", false
-    @shape = CP::Shape::Circle.new CP::Body.new(100, 100), 100.0, CP::Vec2.new(0, 0)
+    @shape = CP::Shape::Circle.new CP::Body.new(100_000, 100_000), 100.0, CP::Vec2.new(0, 0)
     
     # self.shoots Bullet
     # self.muzzle_position_func { self.position + horizontal * 140 }

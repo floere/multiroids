@@ -41,10 +41,10 @@ module TopDownOriented
       self.speed -= rotation_vector * factor * 0.1
     end
     def left amount = turning
-      self.rotation -= amount
+      self.torque -= amount
     end
     def right amount = turning
-      self.rotation += amount
+      self.torque += amount
     end
     
   end

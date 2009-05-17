@@ -11,6 +11,7 @@ module MotherShip
     def acts_as_mothership
       include InstanceMethods
       alias_method_chain :validate_position, :children
+      
       class_inheritable_accessor :prototype_children
       extend ClassMethods
       hook = lambda do
@@ -46,7 +47,9 @@ module MotherShip
     end
     
     def update_children
-      self.children.each { |child| child.update_relative self.position }
+      self.children.each do |child|
+        child.update_relative self
+      end
     end
     
     def validate_position_with_children
