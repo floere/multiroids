@@ -17,7 +17,7 @@ module Generator
   module InstanceMethods
     
     def start_generating
-      threaded 30 do
+      threaded 5 do
         generate
       end
     end

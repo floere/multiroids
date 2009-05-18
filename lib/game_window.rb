@@ -73,7 +73,7 @@ class GameWindow < Gosu::Window
     @space.add_collision_func :bullet, :bullet, &nil
     @space.add_collision_func :bullet, :gun, &nil
     @space.add_collision_func :bullet, :enemy do |bullet_shape, enemy_shape|
-      small_explosion bullet_shape
+      @moveables.each { |bullet| bullet.shape == bullet_shape && bullet.destroy }
     end
     @space.add_collision_func :enemy, :explosion do |enemy_shape, explosion_shape|
       @moveables.each { |enemy| enemy.shape == enemy_shape && enemy.lives -= 100 }

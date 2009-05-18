@@ -5,7 +5,6 @@ class Thing
   attr_reader :window, :shape
   
   def initialize window
-    @running_threads = []
     @window = window
   end
   
@@ -15,7 +14,6 @@ class Thing
   
   def destroy
     @window.unregister self
-    @running_threads.select { |thread| thread.status == false }.each(&:join)
     true
   end
   

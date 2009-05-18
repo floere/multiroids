@@ -2,9 +2,11 @@
 class Bullet < ShortLived
   
   it_is_a Shot
+  it_is_a Generator
+  generates Puff, 0
   
   def initialize window
-    self.lifetime = 1000
+    self.lifetime = 400 + rand(700)
     
     super window
     
@@ -17,6 +19,15 @@ class Bullet < ShortLived
     
     self.friction = 0.0001
     self.velocity = 5 + rand(1)
+    
+    start_generating
+  end
+  
+  def destroy
+    explosion = SmallExplosion.new window
+    explosion.warp position
+    window.register explosion
+    super
   end
   
   def validate_position
