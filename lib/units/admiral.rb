@@ -1,11 +1,11 @@
 class Admiral < Player
   
   acts_as_mothership
-  with Gun, 130,   40
-  with Gun, 130,  -40
-  with Gun,  10,  140
-  with Gun,  10, -140
-  with Gun, 140,    0
+  with Gun, 0,  1 # center aft
+  with Gun, 0, -2 # center steer
+  with Gun, 3,  1 # front aft
+  with Gun, 3, -1 # front steer
+  with Gun, 5,  0 # front center
   
   acceleration 0.001
   turning      0.001
@@ -15,7 +15,7 @@ class Admiral < Player
     super window
     
     @image = Gosu::Image.new window, "media/admiral.png", false
-    @shape = CP::Shape::Circle.new CP::Body.new(100_000, 100_000), 100.0, CP::Vec2.new(0, 0)
+    @shape = CP::Shape::Circle.new CP::Body.new(100_000, 100_000), 10.0, CP::Vec2.new(0, 0)
     
     # self.shoots Bullet
     # self.muzzle_position_func { self.position + horizontal * 140 }

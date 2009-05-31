@@ -6,6 +6,7 @@ class GameWindow < Gosu::Window
   attr_reader :space
   
   def initialize
+    # set to true for fullscreen
     super SCREEN_WIDTH, SCREEN_HEIGHT, false, 16
     
     init
@@ -15,7 +16,7 @@ class GameWindow < Gosu::Window
   end
   
   def init
-    self.caption = "Aliens attaaaaack!"
+    self.caption = "Incredible space battles!"
     @background_image = Gosu::Image.new self, 'media/Space.png', true
     @beep = Gosu::Sample.new self, 'media/beep.wav'
     @score = 0
@@ -72,6 +73,8 @@ class GameWindow < Gosu::Window
   def setup_collisions
     @space.add_collision_func :bullet, :bullet, &nil
     @space.add_collision_func :bullet, :gun, &nil
+    @space.add_collision_func :bullet, :explosion, &nil
+    @space.add_collision_func :bullet, :ambient, &nil
     @space.add_collision_func :bullet, :enemy do |bullet_shape, enemy_shape|
       @moveables.each { |bullet| bullet.shape == bullet_shape && bullet.destroy }
     end
@@ -147,7 +150,6 @@ class GameWindow < Gosu::Window
       Gosu::Button::KbD =>           :right,
       Gosu::Button::KbW =>           :full_speed_ahead,
       Gosu::Button::KbS =>           :reverse,
-      Gosu::Button::KbLeftShift =>   :shoot,
       Gosu::Button::Kb1 =>           :revive
     )
     

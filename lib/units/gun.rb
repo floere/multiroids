@@ -15,18 +15,21 @@ class Gun < Moveable
     @shape = CP::Shape::Circle.new CP::Body.new(1000.0, 75.0), 3.0, CP::Vec2.new(0, 0)
     @shape.collision_type = :gun
     
-    skill = rand * 0.1
+    skill = rand * 0.05
     
     self.shoots Bullet
     self.muzzle_position_func { self.position }
     self.muzzle_velocity_func { |target| (target.position - self.muzzle_position[] + self.random_vector(1/skill)).normalize }
     self.muzzle_rotation_func { |target| (target.position - self.muzzle_position[]).to_angle }
     self.range = 700
-    self.frequency = 100
+    self.frequency = 20
+    
+    # Metaprog this
+    # @sound = Gosu::Sample.new window, 'media/sounds/cannon_shot.mp3'
   end
   
   def random_vector strength
-    CP::Vec2.new(rand, rand).normalize! * strength
+    CP::Vec2.new(rand-0.5, rand-0.5).normalize! * strength
   end
   
   def target *targets
