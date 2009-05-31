@@ -1,6 +1,7 @@
 module Targeting
   
-  # Returns the closest target.
+  # Returns the closest target in the fire arc.
+  # TODO fire arc
   #
   def acquire *targets
     closest = nil
