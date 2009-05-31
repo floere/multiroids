@@ -6,7 +6,7 @@ class Bullet < ShortLived
   generates Puff, 0
   
   def initialize window
-    self.lifetime = 600 + rand(200)
+    self.lifetime = 600 + rand(100)
     
     super window
     
@@ -18,7 +18,7 @@ class Bullet < ShortLived
     @shape.collision_type = :bullet
     
     self.friction = 0.0001
-    self.velocity = 7 + rand(1)
+    self.velocity = 4 + rand(1)
     
     @sound = Gosu::Sample.new window, 'media/sounds/cannon-02.wav'
     @sound.play

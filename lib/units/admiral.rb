@@ -1,10 +1,10 @@
 class Admiral < Player
   
   acts_as_mothership
-  with Gun, 0,  1 # center aft
-  with Gun, 0, -2 # center steer
-  with Gun, 3,  1 # front aft
-  with Gun, 3, -1 # front steer
+  # with Gun, 0,  1 # center aft
+  # with Gun, 0, -2 # center steer
+  # with Gun, 3,  1 # front aft
+  # with Gun, 3, -1 # front steer
   with Gun, 5,  0 # front center
   
   acceleration 0.001

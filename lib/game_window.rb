@@ -95,7 +95,6 @@ class GameWindow < Gosu::Window
     end
     
     @space.add_collision_func :nuke, :ambient, &nil
-    @space.add_collision_func :bullet, :ambient, &nil
     
     @space.add_collision_func :gun, :nuke, &nil
     
@@ -143,7 +142,7 @@ class GameWindow < Gosu::Window
   #
   def add_admiral
     @player1 = Admiral.new self
-    @player1.warp_to 150, 320 # move to the center of the window
+    @player1.warp_to 400, 320
     
     @controls << Controls.new(self, @player1,
       Gosu::Button::KbA =>           :left,
