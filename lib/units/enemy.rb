@@ -6,7 +6,7 @@ class Enemy < Moveable
   include HorizonOriented
   include Targetable
   
-  lives 30
+  lives 10
   
   def initialize window
     super window

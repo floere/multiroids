@@ -1,4 +1,4 @@
-class NukeLauncher < Gun
+class NukeLauncher < Cannon
   
   def initialize window
     super window

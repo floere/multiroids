@@ -14,7 +14,7 @@ class Player < Moveable
     super window
     
     @score = 0
-    @bullet_loaded = true
+    @projectile_loaded = true
     
     @image = Gosu::Image.new window, "media/spaceship.png", false
     @shape = CP::Shape::Circle.new CP::Body.new(0.1, 0.1), 5.0, CP::Vec2.new(0, 0)
@@ -24,7 +24,7 @@ class Player < Moveable
     
     @shape.collision_type = :ship
     
-    self.shoots Bullet
+    self.shoots Projectile
     self.muzzle_position_func { self.position + self.direction_to_earth * 20 }
     self.muzzle_velocity_func { |target| self.direction_to_earth }
     self.muzzle_rotation_func { self.rotation }

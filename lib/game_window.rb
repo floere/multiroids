@@ -7,7 +7,7 @@ class GameWindow < Gosu::Window
   
   def initialize
     # set to true for fullscreen
-    super SCREEN_WIDTH, SCREEN_HEIGHT, false, 16
+    super SCREEN_WIDTH, SCREEN_HEIGHT, true, 16
     
     init
     setup_space
@@ -55,8 +55,8 @@ class GameWindow < Gosu::Window
     wave 10, Enemy, 1000
     
     add_admiral
-    # add_captain
-    # add_first_mate
+    add_captain
+    add_first_mate
   end
   
   def wave amount, type, time
@@ -71,18 +71,18 @@ class GameWindow < Gosu::Window
   end
   
   def setup_collisions
-    @space.add_collision_func :bullet, :bullet, &nil
-    @space.add_collision_func :bullet, :gun, &nil
-    @space.add_collision_func :bullet, :explosion, &nil
-    @space.add_collision_func :bullet, :ambient, &nil
-    @space.add_collision_func :bullet, :enemy do |bullet_shape, enemy_shape|
-      @moveables.each { |bullet| bullet.shape == bullet_shape && bullet.destroy }
+    @space.add_collision_func :projectile, :projectile, &nil
+    @space.add_collision_func :projectile, :gun, &nil
+    @space.add_collision_func :projectile, :explosion, &nil
+    @space.add_collision_func :projectile, :ambient, &nil
+    @space.add_collision_func :projectile, :enemy do |projectile_shape, enemy_shape|
+      @moveables.each { |projectile| projectile.shape == projectile_shape && projectile.destroy }
     end
     @space.add_collision_func :enemy, :explosion do |enemy_shape, explosion_shape|
       @moveables.each { |enemy| enemy.shape == enemy_shape && enemy.lives -= 100 }
     end
     
-    @space.add_collision_func :ship, :bullet, &nil
+    @space.add_collision_func :ship, :projectile, &nil
     @space.add_collision_func :ship, :gun, &nil
     @space.add_collision_func :ship, :nuke do |ship_shape, nuke_shape|
       small_explosion nuke_shape
@@ -98,8 +98,8 @@ class GameWindow < Gosu::Window
     
     @space.add_collision_func :gun, :nuke, &nil
     
-    @space.add_collision_func :bullet, :nuke do |bullet_shape, nuke_shape|
-      small_explosion bullet_shape
+    @space.add_collision_func :projectile, :nuke do |projectile_shape, nuke_shape|
+      small_explosion projectile_shape
       remove nuke_shape
     end
     
@@ -145,11 +145,11 @@ class GameWindow < Gosu::Window
     @player1.warp_to 400, 320
     
     @controls << Controls.new(self, @player1,
-      Gosu::Button::KbA =>           :left,
-      Gosu::Button::KbD =>           :right,
-      Gosu::Button::KbW =>           :full_speed_ahead,
-      Gosu::Button::KbS =>           :reverse,
-      Gosu::Button::Kb1 =>           :revive
+      Gosu::Button::KbA => :left,
+      Gosu::Button::KbD => :right,
+      Gosu::Button::KbW => :full_speed_ahead,
+      Gosu::Button::KbS => :reverse,
+      Gosu::Button::Kb1 => :revive
     )
     
     @players << @player1
@@ -160,16 +160,15 @@ class GameWindow < Gosu::Window
   # Adds the second player.
   #
   def add_captain
-    @player2 = Captain.new self
-    @player2.warp_to 100, SCREEN_HEIGHT - 150
+    @player2 = Admiral.new self
+    @player2.warp_to 400, 250
     
     @controls << Controls.new(self, @player2,
-      Gosu::Button::KbH =>     :left,
-      Gosu::Button::KbK =>     :right,
-      Gosu::Button::KbU =>     :up,
-      Gosu::Button::KbJ =>     :down,
-      Gosu::Button::KbSpace => :shoot,
-      Gosu::Button::Kb7 =>     :revive
+      Gosu::Button::KbH => :left,
+      Gosu::Button::KbK => :right,
+      Gosu::Button::KbU => :full_speed_ahead,
+      Gosu::Button::KbJ => :reverse,
+      Gosu::Button::Kb7 => :revive
     )
     
     @players << @player2
@@ -180,16 +179,15 @@ class GameWindow < Gosu::Window
   # Adds the third player.
   #
   def add_first_mate
-    @player3 = FirstMate.new self
-    @player3.warp_to 50, 100 # move to the center of the window
+    @player3 = Admiral.new self
+    @player3.warp_to 400, 400
     
     @controls << Controls.new(self, @player3,
-      Gosu::Button::KbLeft =>       :left,
-      Gosu::Button::KbRight =>      :right,
-      Gosu::Button::KbUp =>         :up,
-      Gosu::Button::KbDown =>       :down,
-      Gosu::Button::KbRightAlt =>   :shoot,
-      Gosu::Button::Kb0 =>          :revive
+      Gosu::Button::KbLeft =>  :left,
+      Gosu::Button::KbRight => :right,
+      Gosu::Button::KbUp =>    :full_speed_ahead,
+      Gosu::Button::KbDown =>  :reverse,
+      Gosu::Button::Kb0 =>     :revive
     )
     
     @players << @player3

@@ -49,6 +49,10 @@ require 'lib/controls'
 require 'lib/ambient/puff'
 require 'lib/ambient/small_explosion'
 
+require 'lib/units/projectile'
+require 'lib/units/bullet'
+
+require 'lib/units/cannon'
 require 'lib/units/gun'
 require 'lib/units/torpedo'
 
@@ -61,7 +65,6 @@ require 'lib/units/enemy'
 require 'lib/units/cow'
 require 'lib/units/nuke_launcher'
 require 'lib/units/asteroid'
-require 'lib/units/bullet'
 require 'lib/units/earth'
 require 'lib/units/city'
 require 'lib/units/nuke'
