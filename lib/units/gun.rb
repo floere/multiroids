@@ -22,7 +22,7 @@ class Gun < Moveable
     self.muzzle_velocity_func { |target| (target.position - self.muzzle_position[] + self.random_vector(1/skill)).normalize }
     self.muzzle_rotation_func { |target| (target.position - self.muzzle_position[]).to_angle }
     self.range = 600
-    self.frequency = 8
+    self.frequency = 7
     
     # Metaprog this
     # @sound = Gosu::Sample.new window, 'media/sounds/cannon_shot.mp3'
