@@ -1,4 +1,4 @@
-class Admiral < Player
+class Cruiser < Player
   
   acts_as_mothership
   # with Cannon, 0,  1 # center aft
@@ -6,9 +6,10 @@ class Admiral < Player
   # with Cannon, 3,  1 # front aft
   with Gun, 3, -1 # front steer
   with Cannon, 5,  0 # front center
+  with Shield, 0, 0
   
   acceleration 0.001
-  turning      0.001
+  turning       0.01
   lives          300
   
   def initialize window
@@ -31,7 +32,7 @@ class Admiral < Player
     # self.muzzle_rotation_func { self.rotation }
     # self.frequency = 1000
     
-    self.rotation = 0
+    self.rotation = -Math::PI/2
     
     after_initialize
   end

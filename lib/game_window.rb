@@ -141,7 +141,7 @@ class GameWindow < Gosu::Window
   # Adds the first player.
   #
   def add_admiral
-    @player1 = Admiral.new self
+    @player1 = Cruiser.new self
     @player1.warp_to 400, 320
     
     @controls << Controls.new(self, @player1,
@@ -160,7 +160,7 @@ class GameWindow < Gosu::Window
   # Adds the second player.
   #
   def add_captain
-    @player2 = Admiral.new self
+    @player2 = Cruiser.new self
     @player2.warp_to 400, 250
     
     @controls << Controls.new(self, @player2,
@@ -179,7 +179,7 @@ class GameWindow < Gosu::Window
   # Adds the third player.
   #
   def add_first_mate
-    @player3 = Admiral.new self
+    @player3 = Cruiser.new self
     @player3.warp_to 400, 400
     
     @controls << Controls.new(self, @player3,
@@ -279,8 +279,16 @@ class GameWindow < Gosu::Window
   
   def draw_ui
     @font.draw "P1 Score: #{@player1.score}", 10, 10, ZOrder::UI, 1.0, 1.0, 0xffff0000
-    # @font.draw "P2 Score: #{@player2.score}", SCREEN_WIDTH/2-50, 10, ZOrder::UI, 1.0, 1.0, 0xff00ff00
-    # @font.draw "P3 Score: #{@player3.score}", SCREEN_WIDTH-110, 10, ZOrder::UI, 1.0, 1.0, 0xff0000ff
+    @font.draw "#{@player1.torque.round}", @player1.position.x - 10, @player1.position.y + 10, ZOrder::UI, 0.5, 0.5, 0x99ff0000
+    @font.draw "#{@player1.speed.length.round}", @player1.position.x + 10, @player1.position.y + 10, ZOrder::UI, 0.5, 0.5, 0x99ff0000
+    
+    @font.draw "P2 Score: #{@player2.score}", SCREEN_WIDTH/2-50, 10, ZOrder::UI, 1.0, 1.0, 0xff00ff00
+    @font.draw "#{@player2.torque.round}", @player2.position.x - 10, @player2.position.y + 10, ZOrder::UI, 0.5, 0.5, 0x9900ff00
+    @font.draw "#{@player2.speed.length.round}", @player2.position.x + 10, @player2.position.y + 10, ZOrder::UI, 0.5, 0.5, 0x9900ff00
+    
+    @font.draw "P3 Score: #{@player3.score}", SCREEN_WIDTH-110, 10, ZOrder::UI, 1.0, 1.0, 0xff0000ff
+    @font.draw "#{@player3.torque.round}", @player3.position.x - 10, @player3.position.y + 10, ZOrder::UI, 0.5, 0.5, 0x990000ff
+    @font.draw "#{@player3.speed.length.round}", @player3.position.x + 10, @player3.position.y + 10, ZOrder::UI, 0.5, 0.5, 0x990000ff
   end
   
   def draw

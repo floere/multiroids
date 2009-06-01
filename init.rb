@@ -56,10 +56,11 @@ require 'lib/units/cannon'
 require 'lib/units/gun'
 require 'lib/units/torpedo'
 
+require 'lib/units/shield'
 require 'lib/units/player'
 require 'lib/units/first_mate'
 require 'lib/units/captain'
-require 'lib/units/admiral'
+require 'lib/units/cruiser'
 
 require 'lib/units/enemy'
 require 'lib/units/cow'
