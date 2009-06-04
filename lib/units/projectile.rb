@@ -27,9 +27,11 @@ class Projectile < ShortLived
   end
   
   def destroy
-    explosion = SmallExplosion.new window
-    explosion.warp position
-    window.register explosion
+    5.times do
+      explosion = SmallExplosion.new window
+      explosion.warp position + random_vector(rand(25))
+      window.register explosion
+    end
     super
   end
   

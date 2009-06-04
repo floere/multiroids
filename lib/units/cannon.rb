@@ -26,10 +26,6 @@ class Cannon < Moveable
     # @sound = Gosu::Sample.new window, 'media/sounds/cannon_shot.mp3'
   end
   
-  def random_vector strength
-    CP::Vec2.new(rand-0.5, rand-0.5).normalize! * strength
-  end
-  
   def target *targets
     return if targets.empty?
     target = acquire *targets

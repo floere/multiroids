@@ -2,6 +2,10 @@
 #
 class Moveable < Thing
   
+  def random_vector strength = 1
+    CP::Vec2.new(rand-0.5, rand-0.5).normalize! * strength
+  end
+  
   # Directly set the position of our Moveable using a vector.
   #
   def warp vector

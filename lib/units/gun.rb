@@ -26,10 +26,6 @@ class Gun < Moveable
     salvo!
   end
   
-  def random_vector strength
-    CP::Vec2.new(rand-0.5, rand-0.5).normalize! * strength
-  end
-  
   def target *targets
     return unless @salvoing
     return if targets.empty?

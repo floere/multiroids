@@ -10,8 +10,11 @@ class Player < Moveable
   
   attr_accessor :score
   
-  def initialize window
+  def initialize window, color = 0x99ff0000
     super window
+    
+    @font = window.font
+    @color = color
     
     @score = 0
     @projectile_loaded = true
@@ -53,6 +56,9 @@ class Player < Moveable
   end
   
   def draw
+    @font.draw "P1 Score: #{score}", 10, 10, ZOrder::UI, 1.0, 1.0, @color
+    @font.draw "#{torque.round}", position.x - 10, position.y + 10, ZOrder::UI, 0.5, 0.5, @color
+    @font.draw "#{speed.length.round}", position.x + 10, position.y + 10, ZOrder::UI, 0.5, 0.5, @color
     @image.draw_rot position.x, position.y, ZOrder::Player, drawing_rotation
   end
 end

@@ -1,10 +1,10 @@
 class Cruiser < Player
   
   acts_as_mothership
-  # with Cannon, 0,  1 # center aft
-  # with Cannon, 0, -2 # center steer
-  # with Cannon, 3,  1 # front aft
-  with Gun, 3, -1 # front steer
+  # with Gun, 0,  1 # center aft
+  with Gun, 0, -2 # center steer
+  # with Gun, 3,  1 # front aft
+  # with Gun, 3, -1 # front steer
   with Cannon, 5,  0 # front center
   with Shield, 0, 0
   
@@ -12,8 +12,8 @@ class Cruiser < Player
   turning       0.01
   lives          300
   
-  def initialize window
-    super window
+  def initialize window, color
+    super window, color
     
     @image = Gosu::Image.new window, "media/admiral.png", false
     @shape = CP::Shape::Circle.new CP::Body.new(100_000, 100_000), 10.0, CP::Vec2.new(0, 0)
